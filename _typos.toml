@@ -1,0 +1,19 @@
+[files]
+extend-exclude = [
+    "*.json",
+    "*.lock",
+    "*.svg",
+    ".git/",
+    "SECURITY.md"
+]
+
+[default.extend-words]
+ND = "ND"
+nd = "nd"
+ba = "ba"
+pn = "pn"
+sie = "sie"
+Sie = "Sie"
+tou = "tou"
+leafs = "leafs"
+LEAFS = "LEAFS"

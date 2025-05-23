@@ -1,0 +1,26 @@
+[package]
+name = "blake2s_u32"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+unroll.workspace = true
+
+[dev-dependencies]
+blake2 = "*"
+criterion = "0.5"
+
+[[bench]]
+name = "neon"
+harness = false
+
+[features]
+blake2_with_compression = []
+
+default = []

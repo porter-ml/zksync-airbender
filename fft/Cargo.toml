@@ -1,0 +1,27 @@
+[package]
+name = "fft"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+field.workspace = true
+trace_holder.workspace = true
+worker.workspace = true
+unroll.workspace = true
+seq-macro.workspace = true
+itertools.workspace = true
+rayon = "*"
+
+[dev-dependencies]
+criterion = "0.5"
+rand = { workspace = true, features = ["std", "std_rng"]}
+
+[[bench]]
+name = "bitreverse"
+harness = false

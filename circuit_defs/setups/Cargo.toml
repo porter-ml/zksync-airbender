@@ -1,0 +1,24 @@
+[package]
+name = "setups"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+prover = { workspace = true, features = ["prover"] }
+risc_v_cycles = { workspace = true }
+reduced_risc_v_machine = { workspace = true }
+final_reduced_risc_v_machine = { workspace = true }
+blake2_with_compression = { workspace = true }
+bigint_with_control = { workspace = true }
+serde = { workspace = true }
+serde_json = "*"
+proc-macro2 = { version = "1" }
+syn = { version = "2" }
+quote = { version = "1" }
+verifier_common = { workspace = true, features = ["proof_utils"] }

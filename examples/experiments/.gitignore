@@ -1,0 +1,4 @@
+/target
+# Here app.bin is depending on the verifier code that keeps changing.
+app.bin
+Cargo.lock

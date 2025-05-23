@@ -1,0 +1,97 @@
+use crate::allocator::{
+    ConcurrentInnerStaticAllocatorWrapper, InnerStaticAllocatorWrapper,
+    NonConcurrentInnerStaticAllocatorWrapper, StaticAllocation, StaticAllocationBackend,
+    StaticAllocator,
+};
+use era_cudart::memory::DeviceAllocation;
+use era_cudart::memory_pools::DevicePoolAllocation;
+use era_cudart::slice::DeviceSlice;
+use std::ops::{Deref, DerefMut};
+use std::ptr::NonNull;
+
+pub enum StaticDeviceAllocationBackend {
+    DeviceAllocation(DeviceAllocation<u8>),
+    DevicePoolAllocation(DevicePoolAllocation<'static, u8>),
+}
+
+impl Deref for StaticDeviceAllocationBackend {
+    type Target = DeviceSlice<u8>;
+
+    fn deref(&self) -> &Self::Target {
+        match self {
+            Self::DeviceAllocation(allocation) => allocation.deref(),
+            Self::DevicePoolAllocation(allocation) => allocation.deref(),
+        }
+    }
+}
+
+impl DerefMut for StaticDeviceAllocationBackend {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        match self {
+            Self::DeviceAllocation(allocation) => allocation.deref_mut(),
+            Self::DevicePoolAllocation(allocation) => allocation.deref_mut(),
+        }
+    }
+}
+
+impl StaticAllocationBackend for StaticDeviceAllocationBackend {
+    fn as_non_null(&mut self) -> NonNull<u8> {
+        unsafe { NonNull::new_unchecked(self.deref_mut().as_mut_ptr()) }
+    }
+
+    fn len(&self) -> usize {
+        match self {
+            Self::DeviceAllocation(allocation) => allocation.deref(),
+            Self::DevicePoolAllocation(allocation) => allocation.deref(),
+        }
+        .len()
+    }
+
+    fn is_empty(&self) -> bool {
+        match self {
+            Self::DeviceAllocation(allocation) => allocation.deref().is_empty(),
+            Self::DevicePoolAllocation(allocation) => allocation.deref().is_empty(),
+        }
+    }
+}
+
+trait InnerStaticDeviceAllocatorWrapper:
+    InnerStaticAllocatorWrapper<StaticDeviceAllocationBackend>
+{
+}
+
+type ConcurrentInnerStaticDeviceAllocatorWrapper =
+    ConcurrentInnerStaticAllocatorWrapper<StaticDeviceAllocationBackend>;
+
+impl InnerStaticDeviceAllocatorWrapper for ConcurrentInnerStaticDeviceAllocatorWrapper {}
+
+type NonConcurrentInnerStaticDeviceAllocatorWrapper =
+    NonConcurrentInnerStaticAllocatorWrapper<StaticDeviceAllocationBackend>;
+
+impl InnerStaticDeviceAllocatorWrapper for NonConcurrentInnerStaticDeviceAllocatorWrapper {}
+
+type StaticDeviceAllocator<W> = StaticAllocator<StaticDeviceAllocationBackend, W>;
+
+pub type ConcurrentStaticDeviceAllocator =
+    StaticDeviceAllocator<ConcurrentInnerStaticDeviceAllocatorWrapper>;
+
+pub type NonConcurrentStaticDeviceAllocator =
+    StaticDeviceAllocator<NonConcurrentInnerStaticDeviceAllocatorWrapper>;
+
+impl<T, W: InnerStaticDeviceAllocatorWrapper> Deref
+    for StaticAllocation<T, StaticDeviceAllocationBackend, W>
+{
+    type Target = DeviceSlice<T>;
+
+    fn deref(&self) -> &Self::Target {
+        unsafe { DeviceSlice::from_raw_parts(self.data.ptr.as_ptr(), self.data.len) }
+    }
+}
+
+impl<T, W: InnerStaticDeviceAllocatorWrapper> DerefMut
+    for StaticAllocation<T, StaticDeviceAllocationBackend, W>
+{
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        unsafe { DeviceSlice::from_raw_parts_mut(self.data.ptr.as_ptr(), self.data.len) }
+    }
+}
