@@ -35,7 +35,7 @@ at your option.
 
 ## Acknowledgements
 
-Details on third-party notices can be found in [NOTICE.md](./NOTICE.md).
+Details on third-party notices can be found in [NOTICE.md](./NOTICE.md), in `ACKNOWLEDGEMENTS.md` files within the crates, and in comments throughout the code.
 
 ## Official Links
 
