@@ -10,6 +10,7 @@ The most recent documentation can be found here:
   - [RISC-V Prover - Tutorial](./docs/tutorial.md)
   - [Philosophy and logic](./docs/philosophy_and_logic.md)
   - [Subarguments used](./docs/subarguments_used.md)
+  - [Code Repository Layout](./docs/repo_layout.md)
 
 ## How to run it
 

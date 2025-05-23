@@ -1,5 +1,23 @@
 # Philosophy and logic
 
+## Current state of the repo
+
+Our RiscV 32I+M proving machine is composed of highly optimised DEEP STARK/FRI arguments, Lookup/RAM/Delegation arguments, AIR constraints for the RiscV cpu and precompiles (Blake2s/Blake3 and U256 BigInt operations), and a custom Rust Verifier program for recursion and a CPU OS "kernel" program for user-facing evm emulation (not present in this repository). 
+
+Custom "machine configuration" variants of the CPU circuit are provided to disable features at will (e.g. signed multiplication) or to enable new instructions (e.g. basic modular field element operations) during recursion. Some system level opcodes that do not fit our proving context are disallowed (e.g. ECALL/WFI/FENCE/CSR), as are all inefficient unaligned full-word memory accesses and odd half-word accesses, and trap handling is not processed via internal cpu state but rather traps are immediately caught and converted to unprovable constraints, ensuring that our "kernel" OS crashes the prover whenever a bug is found. 
+
+CPU calls to custom "precompile" circuits and accesses to "Non-Determinism" long-term memory storage are performed exclusively through the CSRRW opcode, which is then converted to Delegation argument calls, and further necessary call information is passed through RAM via custom abi. The RiscV constraints follow a common fetch-decode-execute loop, performed exclusively in highest privilege machine mode, which is identically enforced at each cycle and row of our witness trace. 
+
+All arithmetisation is performed over Mersenne31 field elements, except when security requires switching to the extension field (e.g. Lookup finalisation), and since our cpu simulates 32-bit words we have split most of them into 16-bit limbs. All 32-bit registers are kept in RAM, relegating register access to the RAM argument and keeping only a minimal shared state of field element variables across cycles (e.g. Program Counter). RiscV bytecode to be executed is kept in a so called "ROM" which is physically accessed through a preprocessed Lookup table and virtually inhabits a reserved address space portion of the RAM (a similar layout governs CPU register access), which is itself devoid of any further paging or translation layer. 
+
+Maximum total RiscV cpu cycles executed in a single run of the proving machine are in the order of $2^{30}$, chunked into batches of around $2^{22}$ cycles which are then individually proven for a specific circuit and connected by "global" RAM and Delegation arguments, finally chunks are joined via multiple recursion phases until the final proof is obtained. 
+All AIR constraints are kept at a maximum of degree 2 polynomials, which streamlines proving optimisations for STARK/FRI and distills circuit performance analysis to the counting of total field element variables used at each cycle (i.e. number of witness trace columns present in each row). 
+Preliminary minimal witness generation is natively performed by a fast Rust RiscV simulator on a cpu, and quickly handed over to a CUDA-compatible gpu where much faster circuit-specific witness generation and proving can be completed (this repo contains both cpu and gpu prover implementations that mirror each other). 
+
+Stages for each proving chunk follow a linear structure: Stage 1 computes witness LDEs and Trace Commitments, Stage 2 sets up Lookup and Memory arguments, Stage 3 computes the primary STARK Quotient Polynomial, Stage 4 computes the DEEP optimisation (FRI Batched) Polynomial, finally Stage 5 computes the required IOPP (FRI) proof.
+
+## Details
+
 Even though our purpose is to prove RISC-V bytecode execution per-se, we should understand that we effectively start mixing more and more code expressed in normal programming language + compiler assumptions + circuits. One side note for example is existence of the special "non-determinism" register abstraction, that is available for high-level programming language to access, and that can allow to make cheaper proofs of execution without(!) special circuits in some special cases, like hash-to-prime routine, where it's possible to compute some witnesses outside (same as often done in usual circuits), then provide them to the user's program, and verify by spending less cycles, than brute-force computation in the provable environment.
 
 So, we have three programming models that we want to support, that rely on different degree of strictness and control over compiler output:
@@ -10,13 +28,15 @@ So, we have three programming models that we want to support, that rely on diffe
 
 ## Limitations over programs
 
+While the following limitations apply to all programs executed on top of our RiscV cpu, it should be noted that in practice ZKsync user-provided programs will not run directly on the "bare-metal" cpu and instead will be processed by the ZKsync OS kernel program and any VM interpreter (including EVM interepreter) contained therein. It is, then, the primary responsibility of the trusted EVM/VM interpreter (in combination with ZKsync OS) to guarantee memory and resource safety by offering a layer of protection between the cpu and user-provided (potentially unsafe) programs, as well as between each other. Resource control, such as preventing costly infinite loop attacks, is also part of this intermediate layer. As such, ZKsync users are unlikely to be especially affected by or concerned with the following limitations, which are primarily of interest to the technical reader.
+
 - No support of the bytecode in generic RAM. We assume that bytecode is placed in memory subrange that is modeled as ROM
 - No support runtime-loaded bytecode
 - No loader - bytecode is dumped via `objdump`, and resulting flat binary is placed in the ROM. So there is no support of mutable non-trivially (non-zero) initialized variables. So EFL `.data` section is expected to be empty. Programs that do not use `static` variables are completely fine with that, and if such variable is needed it can be implemented via `MaybeUninit` in Rust terms, with manual initialization. Maybe we will spend some time to check what can be done better about it
 - End of execution is checked by the verifier and requires particular behavior of the program - it must just loop at the end (implementation is provided via corresponding crate)
 - In general we assume that intention of running the program is to show that it ended "successfully" - so it didn't panic at the end of the day (that would be unprovable circuit), but whether logical result of this program is "success" or "error" - is not for us to interpret
 
-## Current state of the repo
+## Design shortcomings
 
 Currently the version of the system presented in `main` branch is over-generalized. For example, every cycle contains a decoder logic, there opcode (as `u32`) is parsed to understand what instruction do we execute this cycle (or trap == unprovable circuit) otherwise. As we do not currently support the case of bytecode being located in RAM region of memory (any form of dynamic loading of the bytecode for execution), that would be the case if untrusted native RISC-V bytecode would be supported (that would also require U-mode support), we could instead model `text` section in ROM as jump a lookup of `PC -> fully decoded bytecode information` in circuits. There are some other places with similar inefficiencies.
 

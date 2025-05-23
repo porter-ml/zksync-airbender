@@ -2,11 +2,11 @@
 
 ## Sharding and pre-commitments for permutation proofs
 
-Standard arguments to prove permutation require drawing a common challenge, and as we drag along our memory argument across multiple circuit we have to pre-commit to such pieces of the trace before starting "full mode" proving of those individual pieces. Such pre-commitment is implemented via sending the columns that would be a part of permutation argument into separate subtree, so prover usually does the following
+Standard arguments to prove permutation require drawing a common challenge, and as we drag along our memory argument across multiple circuit we have to pre-commit to such pieces of the trace before starting "full mode" proving of those individual pieces. Such pre-commitment is implemented via sending the columns that would be a part of permutation argument into separate subtree, so prover usually does the following:
 - generate full memory witness (not even full trace witness)
-- commit to then in a chunked form
+- commit to them in a chunked form
 - write them into the transcript and draw challenges
-- (actually fotget all the work above except challenges)
+- (actually forget all the work above except challenges)
 - start proving individual circuits using those external challenges for memory and delegation arguments (on them - below)
 - in the recursive verification step - write down the same trascript using memory-related subtree commitments, and assert equality of the challenges from such regenerated transcript and those external challenges used during proving
 
@@ -47,7 +47,7 @@ For efficiency we model registers as a part of RAM argument, with address space 
 
 ## Delegation argument
 
-We allow to use separate circuits to prove some specialized computations. At the moment we only have a plan for blake2s round function, that would be used both for recursive verification, bytecode decommitment, and storage implementation.
+We allow our "kernel" OS to use separate circuits to prove some specialized computations. At the moment we only have a plan for U256 big integer ops, used for evm emulation, and blake2s/blake3 round function, used both for recursive verification, bytecode decommitment, and storage implementation.
 
 Circuits that perform a delegation technically just read from and write into global RAM, but do so only if they have a corresponding request to process. Main circuit (one that proves RISC-V cycles) forms a set of requests in the form `(should_process_boolean, delegation type, mem_offset_high, write timestamp to use)`. Write timestamp is statically formed from the setup data and circuit index in the batch as usual, and `should_process_boolean`, `delegation type` and `mem_offset_high` are produced by RISC-V cycle. Such requests become part of the set equality argument in the form of `set_snapshot = \sum should_process/((delegation type, mem_offset_high, write timestamp to use) + randomness)` that resembles standard log-derivative lookup argument, but in case of boolean multiplicities it proves set equality.
 
@@ -58,6 +58,6 @@ Circuits that perform a delegation form the same set from their side, and `deleg
 
 There are two important things that allow us to have number of RISC-V cycles larger that prime field's modulus, but still be sound, even though classical log-derivative lookup argument can not be used in this case:
 - on one site of the delegation set snapshot - when RISC-V circuits form it - tuples of `(delegation type, mem_offset_high, write timestamp to use)` are unique - as timestamps are unique. And forming of this set is constrained by the executed program's opcodes, so prover can not substitute arbitrary values into the corresponding columns at all
-- verifier checks that total number of rows in all delegation circuits if less than field modulus. In those circuits prover provides a tuple of `(should_process_boolean, delegation type, mem_offset_high, write timestamp to use)` as a pure witness and could try to make exactly `|F|` same entries to trick the argument, but it'll be rejected by the verifier
+- verifier checks that total number of rows in all delegation circuits is less than field modulus. In those circuits prover provides a tuple of `(should_process_boolean, delegation type, mem_offset_high, write timestamp to use)` as a pure witness and could try to make exactly `|F|` same entries to trick the argument, but it'll be rejected by the verifier
 
 In the same manner as for memory arguments, delegation-related values live in the separate "memory subtree" to allow pre-commit technique to be used. After that all those delegation circuits are fully independent from main RISC-V circuit and can be 1) proved separately and in parallel 2) can have radically different sizes
