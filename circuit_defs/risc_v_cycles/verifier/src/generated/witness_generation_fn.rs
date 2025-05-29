@@ -1,3 +1,4 @@
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_0<
     'a,
@@ -21,6 +22,7 @@ fn eval_fn_0<
     let v_4 = v_3.truncate();
     witness_proxy.set_witness_place_u16(79usize, v_4);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_1<
     'a,
@@ -45,6 +47,7 @@ fn eval_fn_1<
     let v_5 = v_2[1usize];
     witness_proxy.set_witness_place(81usize, v_5);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_2<
     'a,
@@ -77,6 +80,7 @@ fn eval_fn_2<
     let v_11 = v_8[1usize];
     witness_proxy.set_witness_place(83usize, v_11);
 }
+#[allow(unused_variables)]
 fn eval_fn_3<
     'a,
     'b: 'a,
@@ -119,6 +123,7 @@ fn eval_fn_3<
     let v_24 = WitnessComputationCore::into_mask(v_23);
     witness_proxy.set_witness_place_boolean(32usize, v_24);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_4<
     'a,
@@ -141,6 +146,7 @@ fn eval_fn_4<
     let v_3 = W::U16::constant(11u16);
     let v_4 = witness_proxy.lookup_enforce::<3usize>(&[v_0, v_1, v_2], v_3, 2usize);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_5<
     'a,
@@ -163,6 +169,7 @@ fn eval_fn_5<
     let v_3 = W::U16::constant(12u16);
     let v_4 = witness_proxy.lookup_enforce::<3usize>(&[v_0, v_1, v_2], v_3, 3usize);
 }
+#[allow(unused_variables)]
 fn eval_fn_7<
     'a,
     'b: 'a,
@@ -295,6 +302,7 @@ fn eval_fn_7<
     let v_110 = WitnessComputationCore::into_mask(v_109);
     witness_proxy.set_witness_place_boolean(56usize, v_110);
 }
+#[allow(unused_variables)]
 fn eval_fn_8<
     'a,
     'b: 'a,
@@ -441,6 +449,7 @@ fn eval_fn_8<
     W::Field::add_assign_product(&mut v_81, &v_80, &v_8);
     witness_proxy.set_witness_place(115usize, v_81);
 }
+#[allow(unused_variables)]
 fn eval_fn_9<
     'a,
     'b: 'a,
@@ -481,6 +490,7 @@ fn eval_fn_9<
     W::Field::add_assign_product(&mut v_15, &v_14, &v_2);
     witness_proxy.set_witness_place(116usize, v_15);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_11<
     'a,
@@ -504,6 +514,7 @@ fn eval_fn_11<
     let v_4 = v_3.truncate();
     witness_proxy.set_witness_place_u16(118usize, v_4);
 }
+#[allow(unused_variables)]
 fn eval_fn_12<
     'a,
     'b: 'a,
@@ -540,6 +551,7 @@ fn eval_fn_12<
     let v_14 = W::Field::select(&v_3, &v_13, &v_12);
     witness_proxy.set_scratch_place(0usize, v_14);
 }
+#[allow(unused_variables)]
 fn eval_fn_13<
     'a,
     'b: 'a,
@@ -576,6 +588,7 @@ fn eval_fn_13<
     let v_14 = W::Field::select(&v_3, &v_13, &v_12);
     witness_proxy.set_witness_place(92usize, v_14);
 }
+#[allow(unused_variables)]
 fn eval_fn_14<
     'a,
     'b: 'a,
@@ -613,6 +626,7 @@ fn eval_fn_14<
     let v_16 = W::Field::inverse(&v_15);
     witness_proxy.set_witness_place(119usize, v_16);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_15<
     'a,
@@ -636,6 +650,7 @@ fn eval_fn_15<
     let v_4 = v_3.truncate();
     witness_proxy.set_witness_place_u8(4usize, v_4);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_16<
     'a,
@@ -660,6 +675,7 @@ fn eval_fn_16<
     let v_5 = v_2[1usize];
     witness_proxy.set_witness_place(91usize, v_5);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_17<
     'a,
@@ -686,6 +702,7 @@ fn eval_fn_17<
     W::Field::add_assign_product(&mut v_5, &v_4, &v_1);
     witness_proxy.set_scratch_place(2usize, v_5);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_18<
     'a,
@@ -709,6 +726,7 @@ fn eval_fn_18<
     let v_4 = v_3.truncate();
     witness_proxy.set_witness_place_u8(6usize, v_4);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_19<
     'a,
@@ -733,6 +751,7 @@ fn eval_fn_19<
     let v_5 = v_2[1usize];
     witness_proxy.set_witness_place(94usize, v_5);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_20<
     'a,
@@ -759,6 +778,7 @@ fn eval_fn_20<
     W::Field::add_assign_product(&mut v_5, &v_4, &v_1);
     witness_proxy.set_scratch_place(3usize, v_5);
 }
+#[allow(unused_variables)]
 fn eval_fn_21<
     'a,
     'b: 'a,
@@ -812,6 +832,7 @@ fn eval_fn_21<
         ),
     );
 }
+#[allow(unused_variables)]
 fn eval_fn_22<
     'a,
     'b: 'a,
@@ -865,6 +886,7 @@ fn eval_fn_22<
         ),
     );
 }
+#[allow(unused_variables)]
 fn eval_fn_23<
     'a,
     'b: 'a,
@@ -918,6 +940,7 @@ fn eval_fn_23<
         ),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_24<
     'a,
@@ -945,6 +968,7 @@ fn eval_fn_24<
         W::Field::select(&v_1, &v_5, &witness_proxy.get_witness_place(120usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_25<
     'a,
@@ -972,6 +996,7 @@ fn eval_fn_25<
         W::Field::select(&v_1, &v_5, &witness_proxy.get_witness_place(121usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_26<
     'a,
@@ -999,6 +1024,7 @@ fn eval_fn_26<
         W::Field::select(&v_1, &v_5, &witness_proxy.get_scratch_place(4usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_27<
     'a,
@@ -1026,6 +1052,7 @@ fn eval_fn_27<
         W::Field::select(&v_1, &v_5, &witness_proxy.get_witness_place(122usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_28<
     'a,
@@ -1055,6 +1082,7 @@ fn eval_fn_28<
     W::Field::add_assign(&mut v_6, &v_1);
     witness_proxy.set_witness_place(123usize, v_6);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_29<
     'a,
@@ -1077,6 +1105,7 @@ fn eval_fn_29<
     let v_3 = W::Mask::select(&v_1, &v_0, &v_2);
     witness_proxy.set_witness_place_boolean(124usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_30<
     'a,
@@ -1099,6 +1128,7 @@ fn eval_fn_30<
     let v_3 = W::Mask::select(&v_0, &v_1, &v_2);
     witness_proxy.set_witness_place_boolean(125usize, v_3);
 }
+#[allow(unused_variables)]
 fn eval_fn_31<
     'a,
     'b: 'a,
@@ -1179,6 +1209,7 @@ fn eval_fn_31<
         W::U16::select(&v_0, &v_48, &witness_proxy.get_witness_place_u16(24usize)),
     );
 }
+#[allow(unused_variables)]
 fn eval_fn_32<
     'a,
     'b: 'a,
@@ -1259,6 +1290,7 @@ fn eval_fn_32<
         W::U16::select(&v_0, &v_48, &witness_proxy.get_witness_place_u16(24usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_33<
     'a,
@@ -1288,6 +1320,7 @@ fn eval_fn_33<
     W::Field::add_assign(&mut v_6, &v_1);
     witness_proxy.set_witness_place(128usize, v_6);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_34<
     'a,
@@ -1311,6 +1344,7 @@ fn eval_fn_34<
     W::Field::add_assign_product(&mut v_3, &v_0, &v_1);
     witness_proxy.set_witness_place(129usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_35<
     'a,
@@ -1334,6 +1368,7 @@ fn eval_fn_35<
     W::Field::add_assign_product(&mut v_3, &v_0, &v_1);
     witness_proxy.set_scratch_place(5usize, v_3);
 }
+#[allow(unused_variables)]
 fn eval_fn_36<
     'a,
     'b: 'a,
@@ -1415,6 +1450,7 @@ fn eval_fn_36<
         W::U16::select(&v_0, &v_49, &witness_proxy.get_witness_place_u16(24usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_37<
     'a,
@@ -1445,6 +1481,7 @@ fn eval_fn_37<
     W::Field::add_assign(&mut v_7, &v_1);
     witness_proxy.set_witness_place(130usize, v_7);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_38<
     'a,
@@ -1468,6 +1505,7 @@ fn eval_fn_38<
     W::Field::add_assign_product(&mut v_3, &v_2, &v_0);
     witness_proxy.set_witness_place(133usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_39<
     'a,
@@ -1497,6 +1535,7 @@ fn eval_fn_39<
     W::Field::add_assign(&mut v_6, &v_1);
     witness_proxy.set_witness_place(143usize, v_6);
 }
+#[allow(unused_variables)]
 fn eval_fn_40<
     'a,
     'b: 'a,
@@ -1550,6 +1589,7 @@ fn eval_fn_40<
         ),
     );
 }
+#[allow(unused_variables)]
 fn eval_fn_41<
     'a,
     'b: 'a,
@@ -1603,6 +1643,7 @@ fn eval_fn_41<
         ),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_42<
     'a,
@@ -1634,6 +1675,7 @@ fn eval_fn_42<
         W::Field::select(&v_0, &v_6, &witness_proxy.get_witness_place(121usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_43<
     'a,
@@ -1665,6 +1707,7 @@ fn eval_fn_43<
         W::Field::select(&v_0, &v_8, &witness_proxy.get_witness_place(120usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_44<
     'a,
@@ -1687,6 +1730,7 @@ fn eval_fn_44<
     let v_3 = W::Field::select(&v_1, &v_0, &v_2);
     witness_proxy.set_witness_place(154usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_45<
     'a,
@@ -1709,6 +1753,7 @@ fn eval_fn_45<
     let v_3 = W::Field::select(&v_1, &v_0, &v_2);
     witness_proxy.set_witness_place(155usize, v_3);
 }
+#[allow(unused_variables)]
 fn eval_fn_46<
     'a,
     'b: 'a,
@@ -1762,6 +1807,7 @@ fn eval_fn_46<
         ),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_47<
     'a,
@@ -1785,6 +1831,7 @@ fn eval_fn_47<
     W::Field::add_assign_product(&mut v_3, &v_0, &v_1);
     witness_proxy.set_witness_place(156usize, v_3);
 }
+#[allow(unused_variables)]
 fn eval_fn_48<
     'a,
     'b: 'a,
@@ -1838,6 +1885,7 @@ fn eval_fn_48<
         ),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_49<
     'a,
@@ -1869,6 +1917,7 @@ fn eval_fn_49<
         W::Field::select(&v_0, &v_6, &witness_proxy.get_witness_place(121usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_50<
     'a,
@@ -1900,6 +1949,7 @@ fn eval_fn_50<
         W::Field::select(&v_0, &v_6, &witness_proxy.get_witness_place(122usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_51<
     'a,
@@ -1923,6 +1973,7 @@ fn eval_fn_51<
     let v_4 = v_3.truncate();
     witness_proxy.set_witness_place_u16(158usize, v_4);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_52<
     'a,
@@ -1946,6 +1997,7 @@ fn eval_fn_52<
     W::Field::add_assign_product(&mut v_3, &v_0, &v_1);
     witness_proxy.set_witness_place(166usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_53<
     'a,
@@ -1969,6 +2021,7 @@ fn eval_fn_53<
     W::Field::add_assign_product(&mut v_3, &v_0, &v_1);
     witness_proxy.set_witness_place(167usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_54<
     'a,
@@ -1992,6 +2045,7 @@ fn eval_fn_54<
     W::Field::add_assign_product(&mut v_3, &v_0, &v_1);
     witness_proxy.set_witness_place(168usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_55<
     'a,
@@ -2015,6 +2069,7 @@ fn eval_fn_55<
     let v_4 = v_3.truncate();
     witness_proxy.set_witness_place_u16(28usize, v_4);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_56<
     'a,
@@ -2054,6 +2109,7 @@ fn eval_fn_56<
         W::Field::select(&v_2, &v_12, &witness_proxy.get_witness_place(121usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_57<
     'a,
@@ -2088,6 +2144,7 @@ fn eval_fn_57<
     let v_13 = W::Mask::select(&v_1, &v_11, &v_12);
     witness_proxy.set_witness_place_boolean(63usize, v_13);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_58<
     'a,
@@ -2116,6 +2173,7 @@ fn eval_fn_58<
     let v_7 = W::Field::select(&v_0, &v_6, &v_5);
     witness_proxy.set_witness_place(185usize, v_7);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_59<
     'a,
@@ -2144,6 +2202,7 @@ fn eval_fn_59<
     let v_7 = W::Field::select(&v_0, &v_6, &v_5);
     witness_proxy.set_witness_place(186usize, v_7);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_60<
     'a,
@@ -2170,6 +2229,7 @@ fn eval_fn_60<
     let v_6 = W::Field::inverse_or_zero(&v_2);
     witness_proxy.set_witness_place(187usize, v_6);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_61<
     'a,
@@ -2194,6 +2254,7 @@ fn eval_fn_61<
     let v_4 = W::Field::select(&v_0, &v_3, &v_2);
     witness_proxy.set_witness_place(188usize, v_4);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_62<
     'a,
@@ -2218,6 +2279,7 @@ fn eval_fn_62<
     let v_4 = W::Field::select(&v_0, &v_3, &v_2);
     witness_proxy.set_witness_place(189usize, v_4);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_63<
     'a,
@@ -2244,6 +2306,7 @@ fn eval_fn_63<
     let v_6 = W::Field::inverse_or_zero(&v_2);
     witness_proxy.set_witness_place(190usize, v_6);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_64<
     'a,
@@ -2268,6 +2331,7 @@ fn eval_fn_64<
     let v_4 = W::Field::select(&v_0, &v_3, &v_2);
     witness_proxy.set_witness_place(191usize, v_4);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_65<
     'a,
@@ -2292,6 +2356,7 @@ fn eval_fn_65<
     let v_4 = W::Field::select(&v_0, &v_3, &v_2);
     witness_proxy.set_witness_place(192usize, v_4);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_66<
     'a,
@@ -2318,6 +2383,7 @@ fn eval_fn_66<
     let v_6 = W::Field::inverse_or_zero(&v_2);
     witness_proxy.set_witness_place(193usize, v_6);
 }
+#[allow(unused_variables)]
 fn eval_fn_67<
     'a,
     'b: 'a,
@@ -2371,6 +2437,7 @@ fn eval_fn_67<
     let v_28 = W::Field::select(&v_4, &v_27, &v_25);
     witness_proxy.set_witness_place(95usize, v_28);
 }
+#[allow(unused_variables)]
 fn eval_fn_68<
     'a,
     'b: 'a,
@@ -2418,6 +2485,7 @@ fn eval_fn_68<
     let v_23 = W::Field::select(&v_3, &v_22, &v_20);
     witness_proxy.set_witness_place(98usize, v_23);
 }
+#[allow(unused_variables)]
 fn eval_fn_69<
     'a,
     'b: 'a,
@@ -2456,6 +2524,7 @@ fn eval_fn_69<
     let v_16 = W::Field::select(&v_3, &v_15, &v_13);
     witness_proxy.set_witness_place(102usize, v_16);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_70<
     'a,
@@ -2490,6 +2559,7 @@ fn eval_fn_70<
     let v_12 = W::Field::select(&v_2, &v_11, &v_9);
     witness_proxy.set_witness_place(106usize, v_12);
 }
+#[allow(unused_variables)]
 fn eval_fn_71<
     'a,
     'b: 'a,
@@ -2528,6 +2598,7 @@ fn eval_fn_71<
     let v_16 = W::Field::select(&v_4, &v_15, &v_13);
     witness_proxy.set_witness_place(110usize, v_16);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_72<
     'a,
@@ -2552,6 +2623,7 @@ fn eval_fn_72<
     let v_4 = W::Field::select(&v_0, &v_3, &v_1);
     witness_proxy.set_witness_place(114usize, v_4);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_73<
     'a,
@@ -2581,6 +2653,7 @@ fn eval_fn_73<
     let v_8 = W::Field::select(&v_0, &v_7, &v_6);
     witness_proxy.set_scratch_place(6usize, v_8);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_74<
     'a,
@@ -2610,6 +2683,7 @@ fn eval_fn_74<
     let v_8 = W::Field::select(&v_0, &v_7, &v_6);
     witness_proxy.set_scratch_place(7usize, v_8);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_75<
     'a,
@@ -2639,6 +2713,7 @@ fn eval_fn_75<
     let v_8 = W::Field::select(&v_0, &v_7, &v_6);
     witness_proxy.set_witness_place(194usize, v_8);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_76<
     'a,
@@ -2668,6 +2743,7 @@ fn eval_fn_76<
     let v_8 = W::Field::select(&v_0, &v_7, &v_6);
     witness_proxy.set_scratch_place(8usize, v_8);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_77<
     'a,
@@ -2697,6 +2773,7 @@ fn eval_fn_77<
     let v_8 = W::Field::select(&v_0, &v_7, &v_6);
     witness_proxy.set_scratch_place(9usize, v_8);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_78<
     'a,
@@ -2725,6 +2802,7 @@ fn eval_fn_78<
     let v_7 = W::Field::select(&v_1, &v_6, &v_5);
     witness_proxy.set_witness_place(196usize, v_7);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_79<
     'a,
@@ -2753,6 +2831,7 @@ fn eval_fn_79<
     let v_7 = W::Field::select(&v_1, &v_6, &v_5);
     witness_proxy.set_witness_place(197usize, v_7);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_80<
     'a,
@@ -2782,6 +2861,7 @@ fn eval_fn_80<
     let v_8 = W::Field::select(&v_0, &v_7, &v_6);
     witness_proxy.set_witness_place(199usize, v_8);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_81<
     'a,
@@ -2811,6 +2891,7 @@ fn eval_fn_81<
     let v_8 = W::Field::select(&v_0, &v_7, &v_6);
     witness_proxy.set_witness_place(200usize, v_8);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_82<
     'a,
@@ -2840,6 +2921,7 @@ fn eval_fn_82<
     let v_8 = W::Field::select(&v_0, &v_7, &v_6);
     witness_proxy.set_witness_place(201usize, v_8);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_83<
     'a,
@@ -2869,6 +2951,7 @@ fn eval_fn_83<
     let v_8 = W::Field::select(&v_0, &v_7, &v_6);
     witness_proxy.set_witness_place(202usize, v_8);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_84<
     'a,
@@ -2898,6 +2981,7 @@ fn eval_fn_84<
     let v_10 = v_9.truncate();
     witness_proxy.set_witness_place_u8(10usize, v_10);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_85<
     'a,
@@ -2927,6 +3011,7 @@ fn eval_fn_85<
     let v_10 = v_9.truncate();
     witness_proxy.set_witness_place_u8(14usize, v_10);
 }
+#[allow(unused_variables)]
 fn eval_fn_86<
     'a,
     'b: 'a,
@@ -2980,6 +3065,7 @@ fn eval_fn_86<
     let v_31 = v_30.truncate();
     witness_proxy.set_witness_place_u8(15usize, v_31);
 }
+#[allow(unused_variables)]
 fn eval_fn_87<
     'a,
     'b: 'a,
@@ -3073,6 +3159,7 @@ fn eval_fn_87<
     let v_65 = v_64.truncate();
     witness_proxy.set_witness_place_u8(16usize, v_65);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_88<
     'a,
@@ -3100,6 +3187,7 @@ fn eval_fn_88<
     W::Field::add_assign(&mut v_5, &v_0);
     witness_proxy.set_scratch_place(10usize, v_5);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_90<
     'a,
@@ -3123,6 +3211,7 @@ fn eval_fn_90<
     W::Field::add_assign_product(&mut v_3, &v_0, &v_1);
     witness_proxy.set_scratch_place(11usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_91<
     'a,
@@ -3158,6 +3247,7 @@ fn eval_fn_91<
     W::Field::add_assign_product(&mut v_12, &v_11, &v_3);
     witness_proxy.set_scratch_place(12usize, v_12);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_92<
     'a,
@@ -3183,6 +3273,7 @@ fn eval_fn_92<
     let v_5 = W::Field::equal(&v_2, &v_1);
     witness_proxy.set_witness_place_boolean(73usize, v_5);
 }
+#[allow(unused_variables)]
 fn eval_fn_93<
     'a,
     'b: 'a,
@@ -3230,6 +3321,7 @@ fn eval_fn_93<
     W::Field::add_assign(&mut v_17, &v_3);
     witness_proxy.set_witness_place(206usize, v_17);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_94<
     'a,
@@ -3253,6 +3345,7 @@ fn eval_fn_94<
     let v_4 = v_3.truncate();
     witness_proxy.set_witness_place_u16(210usize, v_4);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_96<
     'a,
@@ -3275,6 +3368,7 @@ fn eval_fn_96<
     let v_3 = W::U16::constant(8u16);
     let v_4 = witness_proxy.lookup_enforce::<3usize>(&[v_0, v_1, v_2], v_3, 12usize);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_97<
     'a,
@@ -3297,6 +3391,7 @@ fn eval_fn_97<
     let v_3 = W::U16::constant(8u16);
     let v_4 = witness_proxy.lookup_enforce::<3usize>(&[v_0, v_1, v_2], v_3, 13usize);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_98<
     'a,
@@ -3319,6 +3414,7 @@ fn eval_fn_98<
     let v_3 = W::U16::constant(8u16);
     let v_4 = witness_proxy.lookup_enforce::<3usize>(&[v_0, v_1, v_2], v_3, 14usize);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_99<
     'a,
@@ -3341,6 +3437,7 @@ fn eval_fn_99<
     let v_3 = W::U16::constant(8u16);
     let v_4 = witness_proxy.lookup_enforce::<3usize>(&[v_0, v_1, v_2], v_3, 15usize);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_100<
     'a,
@@ -3363,6 +3460,7 @@ fn eval_fn_100<
     let v_3 = W::U16::constant(8u16);
     let v_4 = witness_proxy.lookup_enforce::<3usize>(&[v_0, v_1, v_2], v_3, 16usize);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_101<
     'a,
@@ -3385,6 +3483,7 @@ fn eval_fn_101<
     let v_3 = W::U16::constant(8u16);
     let v_4 = witness_proxy.lookup_enforce::<3usize>(&[v_0, v_1, v_2], v_3, 17usize);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_102<
     'a,
@@ -3407,6 +3506,7 @@ fn eval_fn_102<
     let v_3 = W::U16::constant(8u16);
     let v_4 = witness_proxy.lookup_enforce::<3usize>(&[v_0, v_1, v_2], v_3, 18usize);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_103<
     'a,
@@ -3429,6 +3529,7 @@ fn eval_fn_103<
     let v_3 = W::Field::select(&v_0, &v_1, &v_2);
     witness_proxy.set_witness_place(126usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_104<
     'a,
@@ -3451,6 +3552,7 @@ fn eval_fn_104<
     let v_3 = W::Field::select(&v_0, &v_1, &v_2);
     witness_proxy.set_witness_place(127usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_105<
     'a,
@@ -3478,6 +3580,7 @@ fn eval_fn_105<
     W::Field::add_assign(&mut v_5, &v_0);
     witness_proxy.set_witness_place(131usize, v_5);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_106<
     'a,
@@ -3505,6 +3608,7 @@ fn eval_fn_106<
     W::Field::add_assign(&mut v_5, &v_0);
     witness_proxy.set_witness_place(132usize, v_5);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_107<
     'a,
@@ -3528,6 +3632,7 @@ fn eval_fn_107<
     W::Field::add_assign_product(&mut v_3, &v_0, &v_1);
     witness_proxy.set_witness_place(134usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_108<
     'a,
@@ -3558,6 +3663,7 @@ fn eval_fn_108<
     W::Field::add_assign(&mut v_7, &v_1);
     witness_proxy.set_witness_place(135usize, v_7);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_109<
     'a,
@@ -3581,6 +3687,7 @@ fn eval_fn_109<
     W::Field::add_assign_product(&mut v_3, &v_0, &v_1);
     witness_proxy.set_witness_place(136usize, v_3);
 }
+#[allow(unused_variables)]
 fn eval_fn_110<
     'a,
     'b: 'a,
@@ -3634,6 +3741,7 @@ fn eval_fn_110<
         W::U16::select(&v_4, &v_19, &witness_proxy.get_witness_place_u16(26usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_111<
     'a,
@@ -3661,6 +3769,7 @@ fn eval_fn_111<
     W::Field::add_assign(&mut v_5, &v_0);
     witness_proxy.set_witness_place(137usize, v_5);
 }
+#[allow(unused_variables)]
 fn eval_fn_112<
     'a,
     'b: 'a,
@@ -3714,6 +3823,7 @@ fn eval_fn_112<
         W::U16::select(&v_4, &v_19, &witness_proxy.get_witness_place_u16(26usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_113<
     'a,
@@ -3744,6 +3854,7 @@ fn eval_fn_113<
     W::Field::add_assign(&mut v_7, &v_1);
     witness_proxy.set_witness_place(138usize, v_7);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_114<
     'a,
@@ -3770,6 +3881,7 @@ fn eval_fn_114<
     let v_6 = W::Field::inverse_or_zero(&v_2);
     witness_proxy.set_witness_place(140usize, v_6);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_115<
     'a,
@@ -3797,6 +3909,7 @@ fn eval_fn_115<
     W::Field::sub_assign(&mut v_5, &v_1);
     witness_proxy.set_witness_place(141usize, v_5);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_116<
     'a,
@@ -3819,6 +3932,7 @@ fn eval_fn_116<
     let v_3 = W::Mask::select(&v_0, &v_2, &v_1);
     witness_proxy.set_witness_place_boolean(142usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_117<
     'a,
@@ -3841,6 +3955,7 @@ fn eval_fn_117<
     let v_3 = W::Field::select(&v_2, &v_0, &v_1);
     witness_proxy.set_witness_place(144usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_118<
     'a,
@@ -3863,6 +3978,7 @@ fn eval_fn_118<
     let v_3 = W::Field::select(&v_2, &v_0, &v_1);
     witness_proxy.set_witness_place(145usize, v_3);
 }
+#[allow(unused_variables)]
 fn eval_fn_119<
     'a,
     'b: 'a,
@@ -3913,6 +4029,7 @@ fn eval_fn_119<
         W::Field::select(&v_1, &v_21, &witness_proxy.get_witness_place(122usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_120<
     'a,
@@ -3944,6 +4061,7 @@ fn eval_fn_120<
         W::Field::select(&v_0, &v_6, &witness_proxy.get_witness_place(121usize)),
     );
 }
+#[allow(unused_variables)]
 fn eval_fn_121<
     'a,
     'b: 'a,
@@ -4043,6 +4161,7 @@ fn eval_fn_121<
     let v_67 = W::Mask::select(&v_5, &v_23, &v_66);
     witness_proxy.set_witness_place_boolean(62usize, v_67);
 }
+#[allow(unused_variables)]
 fn eval_fn_122<
     'a,
     'b: 'a,
@@ -4088,6 +4207,7 @@ fn eval_fn_122<
     let v_21 = W::Field::select(&v_5, &v_20, &v_18);
     witness_proxy.set_witness_place(96usize, v_21);
 }
+#[allow(unused_variables)]
 fn eval_fn_123<
     'a,
     'b: 'a,
@@ -4160,6 +4280,7 @@ fn eval_fn_123<
     let v_43 = W::Field::select(&v_4, &v_42, &v_41);
     witness_proxy.set_witness_place(99usize, v_43);
 }
+#[allow(unused_variables)]
 fn eval_fn_124<
     'a,
     'b: 'a,
@@ -4203,6 +4324,7 @@ fn eval_fn_124<
     let v_20 = W::Field::select(&v_0, &v_19, &v_17);
     witness_proxy.set_witness_place(111usize, v_20);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_125<
     'a,
@@ -4232,6 +4354,7 @@ fn eval_fn_125<
     let v_8 = W::Field::select(&v_0, &v_7, &v_6);
     witness_proxy.set_witness_place(195usize, v_8);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_126<
     'a,
@@ -4260,6 +4383,7 @@ fn eval_fn_126<
     let v_7 = W::Field::select(&v_1, &v_6, &v_5);
     witness_proxy.set_witness_place(198usize, v_7);
 }
+#[allow(unused_variables)]
 fn eval_fn_127<
     'a,
     'b: 'a,
@@ -4383,6 +4507,7 @@ fn eval_fn_127<
     let v_90 = v_89.truncate();
     witness_proxy.set_witness_place_u8(17usize, v_90);
 }
+#[allow(unused_variables)]
 fn eval_fn_128<
     'a,
     'b: 'a,
@@ -4521,6 +4646,7 @@ fn eval_fn_128<
     let v_100 = v_99.truncate();
     witness_proxy.set_witness_place_u8(18usize, v_100);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_129<
     'a,
@@ -4543,6 +4669,7 @@ fn eval_fn_129<
     let v_3 = W::U16::constant(8u16);
     let v_4 = witness_proxy.lookup_enforce::<3usize>(&[v_0, v_1, v_2], v_3, 19usize);
 }
+#[allow(unused_variables)]
 fn eval_fn_130<
     'a,
     'b: 'a,
@@ -4589,6 +4716,7 @@ fn eval_fn_130<
         W::Field::select(&v_0, &v_18, &witness_proxy.get_scratch_place(4usize)),
     );
 }
+#[allow(unused_variables)]
 fn eval_fn_131<
     'a,
     'b: 'a,
@@ -4635,6 +4763,7 @@ fn eval_fn_131<
         W::Field::select(&v_0, &v_18, &witness_proxy.get_witness_place(149usize)),
     );
 }
+#[allow(unused_variables)]
 fn eval_fn_132<
     'a,
     'b: 'a,
@@ -4681,6 +4810,7 @@ fn eval_fn_132<
         W::Field::select(&v_0, &v_18, &witness_proxy.get_witness_place(151usize)),
     );
 }
+#[allow(unused_variables)]
 fn eval_fn_133<
     'a,
     'b: 'a,
@@ -4727,6 +4857,7 @@ fn eval_fn_133<
         W::Field::select(&v_0, &v_18, &witness_proxy.get_witness_place(153usize)),
     );
 }
+#[allow(unused_variables)]
 fn eval_fn_134<
     'a,
     'b: 'a,
@@ -4773,6 +4904,7 @@ fn eval_fn_134<
         W::Field::select(&v_0, &v_18, &witness_proxy.get_witness_place(150usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_135<
     'a,
@@ -4796,6 +4928,7 @@ fn eval_fn_135<
     W::Field::add_assign_product(&mut v_3, &v_0, &v_1);
     witness_proxy.set_witness_place(159usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_136<
     'a,
@@ -4819,6 +4952,7 @@ fn eval_fn_136<
     W::Field::add_assign_product(&mut v_3, &v_0, &v_1);
     witness_proxy.set_witness_place(160usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_137<
     'a,
@@ -4853,6 +4987,7 @@ fn eval_fn_137<
     W::Field::add_assign_product(&mut v_10, &v_9, &v_3);
     witness_proxy.set_witness_place(161usize, v_10);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_138<
     'a,
@@ -4876,6 +5011,7 @@ fn eval_fn_138<
     W::Field::add_assign_product(&mut v_3, &v_0, &v_1);
     witness_proxy.set_witness_place(162usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_139<
     'a,
@@ -4898,6 +5034,7 @@ fn eval_fn_139<
     W::Field::sub_assign(&mut v_2, &v_0);
     witness_proxy.set_witness_place(163usize, v_2);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_140<
     'a,
@@ -4928,6 +5065,7 @@ fn eval_fn_140<
     W::Field::add_assign(&mut v_7, &v_1);
     witness_proxy.set_witness_place(164usize, v_7);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_141<
     'a,
@@ -4958,6 +5096,7 @@ fn eval_fn_141<
     W::Field::add_assign(&mut v_7, &v_1);
     witness_proxy.set_witness_place(165usize, v_7);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_142<
     'a,
@@ -4988,6 +5127,7 @@ fn eval_fn_142<
     W::Field::add_assign(&mut v_7, &v_1);
     witness_proxy.set_witness_place(169usize, v_7);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_143<
     'a,
@@ -5019,6 +5159,7 @@ fn eval_fn_143<
         W::Field::select(&v_0, &v_6, &witness_proxy.get_witness_place(152usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_144<
     'a,
@@ -5054,6 +5195,7 @@ fn eval_fn_144<
     W::Field::sub_assign(&mut v_10, &v_3);
     witness_proxy.set_witness_place(171usize, v_10);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_145<
     'a,
@@ -5085,6 +5227,7 @@ fn eval_fn_145<
     W::Field::add_assign(&mut v_8, &v_2);
     witness_proxy.set_witness_place(172usize, v_8);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_146<
     'a,
@@ -5124,6 +5267,7 @@ fn eval_fn_146<
         W::Field::select(&v_1, &v_12, &witness_proxy.get_witness_place(152usize)),
     );
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_147<
     'a,
@@ -5147,6 +5291,7 @@ fn eval_fn_147<
     W::Field::add_assign_product(&mut v_3, &v_0, &v_1);
     witness_proxy.set_witness_place(173usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_148<
     'a,
@@ -5183,6 +5328,7 @@ fn eval_fn_148<
     W::Field::sub_assign(&mut v_11, &v_2);
     witness_proxy.set_witness_place(174usize, v_11);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_149<
     'a,
@@ -5213,6 +5359,7 @@ fn eval_fn_149<
     W::Field::add_assign(&mut v_7, &v_2);
     witness_proxy.set_witness_place(175usize, v_7);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_150<
     'a,
@@ -5239,6 +5386,7 @@ fn eval_fn_150<
     W::Field::add_assign(&mut v_5, &v_1);
     witness_proxy.set_witness_place(176usize, v_5);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_151<
     'a,
@@ -5273,6 +5421,7 @@ fn eval_fn_151<
     let v_12 = W::Field::select(&v_3, &v_11, &v_10);
     witness_proxy.set_witness_place(177usize, v_12);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_152<
     'a,
@@ -5307,6 +5456,7 @@ fn eval_fn_152<
     let v_12 = W::Field::select(&v_3, &v_11, &v_10);
     witness_proxy.set_witness_place(178usize, v_12);
 }
+#[allow(unused_variables)]
 fn eval_fn_153<
     'a,
     'b: 'a,
@@ -5345,6 +5495,7 @@ fn eval_fn_153<
     let v_16 = W::Field::select(&v_4, &v_15, &v_13);
     witness_proxy.set_witness_place(179usize, v_16);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_154<
     'a,
@@ -5367,6 +5518,7 @@ fn eval_fn_154<
     let v_3 = W::Field::select(&v_0, &v_2, &v_1);
     witness_proxy.set_witness_place(181usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_155<
     'a,
@@ -5389,6 +5541,7 @@ fn eval_fn_155<
     let v_3 = W::Field::select(&v_0, &v_2, &v_1);
     witness_proxy.set_witness_place(182usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_159<
     'a,
@@ -5416,6 +5569,7 @@ fn eval_fn_159<
     W::Field::add_assign(&mut v_5, &v_1);
     witness_proxy.set_witness_place(183usize, v_5);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_160<
     'a,
@@ -5443,6 +5597,7 @@ fn eval_fn_160<
     W::Field::add_assign(&mut v_5, &v_1);
     witness_proxy.set_witness_place(184usize, v_5);
 }
+#[allow(unused_variables)]
 fn eval_fn_161<
     'a,
     'b: 'a,
@@ -5487,6 +5642,7 @@ fn eval_fn_161<
     let v_20 = W::Field::select(&v_5, &v_19, &v_18);
     witness_proxy.set_witness_place(97usize, v_20);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_162<
     'a,
@@ -5509,6 +5665,7 @@ fn eval_fn_162<
     let v_3 = witness_proxy.get_witness_place_u16(98usize);
     let v_4 = witness_proxy.lookup_enforce::<3usize>(&[v_0, v_1, v_2], v_3, 7usize);
 }
+#[allow(unused_variables)]
 fn eval_fn_163<
     'a,
     'b: 'a,
@@ -5546,6 +5703,7 @@ fn eval_fn_163<
     let v_15 = W::Field::select(&v_3, &v_14, &v_13);
     witness_proxy.set_witness_place(100usize, v_15);
 }
+#[allow(unused_variables)]
 fn eval_fn_164<
     'a,
     'b: 'a,
@@ -5583,6 +5741,7 @@ fn eval_fn_164<
     let v_15 = W::Field::select(&v_3, &v_14, &v_13);
     witness_proxy.set_witness_place(101usize, v_15);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_165<
     'a,
@@ -5605,6 +5764,7 @@ fn eval_fn_165<
     let v_3 = witness_proxy.get_witness_place_u16(102usize);
     let v_4 = witness_proxy.lookup_enforce::<3usize>(&[v_0, v_1, v_2], v_3, 8usize);
 }
+#[allow(unused_variables)]
 fn eval_fn_166<
     'a,
     'b: 'a,
@@ -5674,6 +5834,7 @@ fn eval_fn_166<
     let v_41 = W::Field::select(&v_12, &v_40, &v_38);
     witness_proxy.set_witness_place(103usize, v_41);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_167<
     'a,
@@ -5708,6 +5869,7 @@ fn eval_fn_167<
     let v_12 = W::Field::select(&v_2, &v_11, &v_10);
     witness_proxy.set_witness_place(104usize, v_12);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_168<
     'a,
@@ -5742,6 +5904,7 @@ fn eval_fn_168<
     let v_12 = W::Field::select(&v_2, &v_11, &v_10);
     witness_proxy.set_witness_place(105usize, v_12);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_169<
     'a,
@@ -5764,6 +5927,7 @@ fn eval_fn_169<
     let v_3 = witness_proxy.get_witness_place_u16(106usize);
     let v_4 = witness_proxy.lookup_enforce::<3usize>(&[v_0, v_1, v_2], v_3, 9usize);
 }
+#[allow(unused_variables)]
 fn eval_fn_170<
     'a,
     'b: 'a,
@@ -5825,6 +5989,7 @@ fn eval_fn_170<
     let v_34 = W::Field::select(&v_1, &v_33, &v_31);
     witness_proxy.set_witness_place(107usize, v_34);
 }
+#[allow(unused_variables)]
 fn eval_fn_171<
     'a,
     'b: 'a,
@@ -5862,6 +6027,7 @@ fn eval_fn_171<
     let v_15 = W::Field::select(&v_6, &v_14, &v_13);
     witness_proxy.set_witness_place(108usize, v_15);
 }
+#[allow(unused_variables)]
 fn eval_fn_172<
     'a,
     'b: 'a,
@@ -5899,6 +6065,7 @@ fn eval_fn_172<
     let v_15 = W::Field::select(&v_6, &v_14, &v_13);
     witness_proxy.set_witness_place(109usize, v_15);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_173<
     'a,
@@ -5921,6 +6088,7 @@ fn eval_fn_173<
     let v_3 = witness_proxy.get_witness_place_u16(110usize);
     let v_4 = witness_proxy.lookup_enforce::<3usize>(&[v_0, v_1, v_2], v_3, 10usize);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_174<
     'a,
@@ -5945,6 +6113,7 @@ fn eval_fn_174<
     let v_4 = W::Field::select(&v_0, &v_3, &v_2);
     witness_proxy.set_witness_place(112usize, v_4);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_175<
     'a,
@@ -5969,6 +6138,7 @@ fn eval_fn_175<
     let v_4 = W::Field::select(&v_0, &v_3, &v_2);
     witness_proxy.set_witness_place(113usize, v_4);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_176<
     'a,
@@ -5991,6 +6161,7 @@ fn eval_fn_176<
     let v_3 = witness_proxy.get_witness_place_u16(114usize);
     let v_4 = witness_proxy.lookup_enforce::<3usize>(&[v_0, v_1, v_2], v_3, 11usize);
 }
+#[allow(unused_variables)]
 fn eval_fn_181<
     'a,
     'b: 'a,
@@ -6082,6 +6253,7 @@ fn eval_fn_181<
     let v_57 = W::Field::select(&v_2, &v_56, &v_54);
     witness_proxy.set_witness_place(203usize, v_57);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_182<
     'a,
@@ -6104,6 +6276,7 @@ fn eval_fn_182<
     let v_3 = W::Field::select(&v_1, &v_0, &v_2);
     witness_proxy.set_witness_place(207usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_188<
     'a,
@@ -6127,6 +6300,7 @@ fn eval_fn_188<
     W::Field::add_assign_product(&mut v_3, &v_0, &v_1);
     witness_proxy.set_witness_place(146usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_189<
     'a,
@@ -6157,6 +6331,7 @@ fn eval_fn_189<
     W::Field::add_assign(&mut v_7, &v_0);
     witness_proxy.set_witness_place(147usize, v_7);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_190<
     'a,
@@ -6187,6 +6362,7 @@ fn eval_fn_190<
     W::Field::add_assign(&mut v_7, &v_0);
     witness_proxy.set_witness_place(148usize, v_7);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_191<
     'a,
@@ -6210,6 +6386,7 @@ fn eval_fn_191<
     W::Field::add_assign_product(&mut v_3, &v_0, &v_1);
     witness_proxy.set_witness_place(170usize, v_3);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_192<
     'a,
@@ -6245,6 +6422,7 @@ fn eval_fn_192<
     let v_13 = W::Field::select(&v_3, &v_12, &v_11);
     witness_proxy.set_witness_place(180usize, v_13);
 }
+#[allow(unused_variables)]
 fn eval_fn_193<
     'a,
     'b: 'a,
@@ -6332,6 +6510,7 @@ fn eval_fn_193<
     let v_54 = W::Field::select(&v_2, &v_53, &v_51);
     witness_proxy.set_witness_place(204usize, v_54);
 }
+#[allow(unused_variables)]
 #[inline(always)]
 fn eval_fn_194<
     'a,
@@ -6354,6 +6533,7 @@ fn eval_fn_194<
     let v_3 = W::Field::select(&v_1, &v_0, &v_2);
     witness_proxy.set_witness_place(208usize, v_3);
 }
+#[allow(unused_variables)]
 fn eval_fn_196<
     'a,
     'b: 'a,
@@ -6423,6 +6603,7 @@ fn eval_fn_196<
     let v_48 = v_47.truncate();
     witness_proxy.set_witness_place_u16(212usize, v_48);
 }
+#[allow(dead_code)]
 pub fn evaluate_witness_fn<
     'a,
     'b: 'a,
