@@ -33,6 +33,7 @@ bit-set = { version = "0.8", optional = true }
 lib-rv32-asm = {git = "https://github.com/shamatar/lib-rv32.git", optional = true }
 serde_json = { version = "*", optional = true }
 bincode = { version = "1.3", optional = true }
+mmap-rs = "*"
 
 [dev-dependencies]
 rand = { workspace = true, features = ["std", "std_rng"]}

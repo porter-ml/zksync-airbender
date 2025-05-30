@@ -454,7 +454,6 @@ pub fn dev_run_for_num_cycles_under_convention_ext_with_gpu_tracers<
     } = bookkeeping_aux_data;
 
     dbg!(num_touched_ram_cells);
-    let ram = memory.clone().get_final_ram_state();
 
     let mut teardown_data: Vec<(u32, (TimestampScalar, u32))> =
         Vec::with_capacity(num_touched_ram_cells);
@@ -464,7 +463,7 @@ pub fn dev_run_for_num_cycles_under_convention_ext_with_gpu_tracers<
             let phys_address = word_idx << 2;
             let word_is_used = *bitmask & (1 << bit_idx) > 0;
             if word_is_used {
-                let word_value = ram[word_idx];
+                let word_value = memory.read(phys_address);
                 let last_timestamp: TimestampScalar = ram_words_last_live_timestamps[word_idx];
                 teardown_data.push((phys_address as u32, (last_timestamp, word_value)));
             }

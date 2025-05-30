@@ -1,5 +1,6 @@
 #![allow(incomplete_features)]
 #![feature(generic_const_exprs)]
+#![feature(allocator_api)]
 
 pub const ENTRY_POINT: u32 = 0;
 
@@ -24,6 +25,45 @@ use std::collections::HashMap;
 use worker::Worker;
 
 pub use setups;
+
+// struct LockedAllocator {
+// }
+//
+//
+// unsafe impl Allocator for LockedAllocator {
+//     fn allocate(&self, layout: Layout) -> Result<NonNull<[u8]>, AllocError> {
+//         let len = layout.size();
+//         let mut mapping = MmapOptions::new(len).unwrap().with_flags(MmapFlags::LOCKED).map_mut().unwrap();
+//         let ptr = mapping.as_ptr();
+//         mapping.drop()
+//         Ok(NonNull::slice_from_raw_parts(ptr, len))
+//     }
+//
+//     unsafe fn deallocate(&self, ptr: NonNull<u8>, layout: Layout) {
+//         todo!()
+//     }
+// }
+//
+// impl Clone for LockedAllocator {
+//     fn clone(&self) -> Self {
+//         todo!()
+//     }
+// }
+//
+// impl Default for LockedAllocator {
+//     fn default() -> Self {
+//         todo!()
+//     }
+// }
+//
+// impl Debug for LockedAllocator {
+//     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+//         todo!()
+//     }
+// }
+//
+// impl GoodAllocator for LockedAllocator {
+// }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct FinalRegisterValue {
@@ -158,6 +198,7 @@ pub fn run_till_end_for_gpu_for_machine_config<
 
     let memory_final_state = memory.get_final_ram_state();
     let memory_state_ref = &memory_final_state;
+    // let memory_ref = &memory.get_final_ram_state();
     let ram_words_last_live_timestamps_ref = &ram_words_last_live_timestamps;
 
     // parallel collect
@@ -183,7 +224,8 @@ pub fn run_till_end_for_gpu_for_machine_config<
                         let phys_address = word_idx << 2;
                         let word_is_used = *word & (1 << bit_idx) > 0;
                         if word_is_used {
-                            let word_value = memory_state_ref[word_idx];
+                            // let word_value = memory_state_ref[word_idx];
+                            let word_value = unsafe { *(memory_state_ref.as_ptr().add(phys_address) as *const u32) };
                             let last_timestamp: TimestampScalar =
                                 ram_words_last_live_timestamps_ref[word_idx];
                             el.push((phys_address as u32, (last_timestamp, word_value)));

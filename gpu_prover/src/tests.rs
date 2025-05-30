@@ -587,6 +587,56 @@ where
                 worker,
             );
 
+            let _gpu_proof = {
+                let circuit = &prec.compiled_circuit.compiled_circuit;
+                let lde_factor = prec.lde_factor;
+                let log_lde_factor = lde_factor.trailing_zeros();
+                let trace_len = circuit.trace_len;
+                let log_domain_size = trace_len.trailing_zeros();
+                let log_tree_cap_size = OPTIMAL_FOLDING_PROPERTIES[log_domain_size as usize]
+                    .total_caps_size_log2 as u32;
+                let setup_row_major = &prec.setup.ldes[0].trace;
+                let mut setup_evaluations = Vec::with_capacity_in(
+                    setup_row_major.as_slice().len(),
+                    P::HostAllocator::default(),
+                );
+                unsafe { setup_evaluations.set_len(setup_row_major.as_slice().len()) };
+                transpose::transpose(
+                    setup_row_major.as_slice(),
+                    &mut setup_evaluations,
+                    setup_row_major.padded_width,
+                    setup_row_major.len(),
+                );
+                setup_evaluations.truncate(setup_row_major.len() * setup_row_major.width());
+                let mut setup = SetupPrecomputations::new(
+                    circuit,
+                    log_lde_factor,
+                    log_tree_cap_size,
+                    prover_context,
+                )?;
+                setup.schedule_transfer(Arc::new(setup_evaluations), prover_context)?;
+                let trace = el.clone().into();
+                let data = TracingDataHost::Delegation(trace);
+                let circuit_type = CircuitType::from_delegation_type(*delegation_type);
+                let mut transfer = TracingDataTransfer::new(circuit_type, data, prover_context)?;
+                transfer.schedule_transfer(prover_context)?;
+                let job = crate::prover::proof::prove(
+                    circuit,
+                    external_values,
+                    &mut setup,
+                    transfer,
+                    &prec.twiddles,
+                    &prec.lde_precomputations,
+                    0,
+                    Some(*delegation_type),
+                    prec.lde_factor,
+                    NUM_QUERIES,
+                    POW_BITS,
+                    Some(cpu_proof.pow_nonce),
+                    prover_context,
+                )?;
+                job.finish()?
+            };
             let gpu_proof = {
                 let circuit = &prec.compiled_circuit.compiled_circuit;
                 let lde_factor = prec.lde_factor;
