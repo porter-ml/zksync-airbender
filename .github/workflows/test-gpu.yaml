@@ -67,8 +67,6 @@ jobs:
       matrix:
         package: [ "zksmith" ]
     needs: zksync-airbender-build
-    env:
-      BELLMAN_CUDA_DIR: ${{ github.workspace }}/bellman-cuda
     steps:
       - name: Prepare environment
         run: |
@@ -80,26 +78,14 @@ jobs:
         run: |
           nvidia-smi
 
-      - name: Prepare bellman-cuda directory
-        shell: bash
-        # Curl ugliness is required because gh can't work with authentication: https://github.com/cli/cli/issues/2680.
-        run: |
-          release=($(curl --silent https://api.github.com/repos/matter-labs/era-bellman-cuda/releases | jq -r '.[0] | .name, .tarball_url, .assets[0].browser_download_url'))
-          curl --silent -L "${release[1]}" --output bellman-cuda-source.tar.gz
-          curl --silent -L "${release[2]}" --output bellman-cuda.tar.gz
-          mkdir -p bellman-cuda
-          tar xvfz bellman-cuda.tar.gz -C ./bellman-cuda
-          tar xvfz bellman-cuda-source.tar.gz -C ./bellman-cuda --strip-components=1 --wildcards \*/src/
-
-
       - name: Download test binary built with CUDA 12.6
         uses: actions/download-artifact@v4
         with:
-          name: zksync-airbender-12.6.0-devel-ubuntu20.04-${{ matrix.package }}-test-binary
+          name: zksync-airbender-12.6.0-devel-ubuntu24.04-${{ matrix.package }}-test-binary
           path: zksync-airbender-test-binary/12.6/
 
       - name: Run test binary built with CUDA 12.6
-        id: test_cuda_12_5
+        id: test_cuda_12_6
         continue-on-error: true
         run: |
           chmod +x zksync-airbender-test-binary/12.6/${{ matrix.package }}
