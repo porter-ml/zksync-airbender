@@ -65,7 +65,11 @@ jobs:
     runs-on: [ matterlabs-ci-gpu-runner ]
     strategy:
       matrix:
+        cuda: [ "12.6.0-devel-ubuntu24.04" ]
         package: [ "zksmith" ]
+    container:
+      image: nvidia/cuda:${{ matrix.cuda }}
+
     needs: zksync-airbender-build
     steps:
       - name: Prepare environment
@@ -86,7 +90,6 @@ jobs:
 
       - name: Run test binary built with CUDA 12.6
         id: test_cuda_12_6
-        continue-on-error: true
         run: |
           chmod +x zksync-airbender-test-binary/12.6/${{ matrix.package }}
           zksync-airbender-test-binary/12.6/${{ matrix.package }} --nocapture
