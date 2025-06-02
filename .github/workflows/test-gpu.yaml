@@ -11,7 +11,7 @@ jobs:
     runs-on: [ ubuntu-latest ]
     strategy:
       matrix:
-        cuda: [ "12.6.0-devel-ubuntu22.04" ]
+        cuda: [ "12.6.0-devel-ubuntu24.04" ]
         package: [ "zksmith" ]
     container:
       image: nvidia/cuda:${{ matrix.cuda }}
