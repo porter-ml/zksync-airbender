@@ -16,7 +16,6 @@ impl DecodableMachineOp for AddOp {
         func7: u8,
     ) -> Result<
         (
-            InstructionOperandSelectionData,
             InstructionType,
             DecoderMajorInstructionFamilyKey,
             &'static [DecoderInstructionVariantsKey],
@@ -26,21 +25,11 @@ impl DecodableMachineOp for AddOp {
         let params = match (opcode, func3, func7) {
             (OPERATION_OP, 0b000, 0b000_0000) => {
                 // ADD
-                (
-                    BASE_R_TYPE_AUX_DATA,
-                    InstructionType::RType,
-                    ADD_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::RType, ADD_OP_KEY, &[][..])
             }
             (OPERATION_OP_IMM, 0b000, _) => {
                 // ADDI
-                (
-                    BASE_I_TYPE_AUX_DATA,
-                    InstructionType::IType,
-                    ADD_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::IType, ADD_OP_KEY, &[][..])
             }
 
             _ => return Err(()),
@@ -111,7 +100,6 @@ impl DecodableMachineOp for SubOp {
         func7: u8,
     ) -> Result<
         (
-            InstructionOperandSelectionData,
             InstructionType,
             DecoderMajorInstructionFamilyKey,
             &'static [DecoderInstructionVariantsKey],
@@ -121,12 +109,7 @@ impl DecodableMachineOp for SubOp {
         let params = match (opcode, func3, func7) {
             (OPERATION_OP, 0b000, 0b010_0000) => {
                 // SUB
-                (
-                    BASE_R_TYPE_AUX_DATA,
-                    InstructionType::RType,
-                    SUB_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::RType, SUB_OP_KEY, &[][..])
             }
             _ => return Err(()),
         };

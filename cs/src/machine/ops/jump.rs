@@ -15,7 +15,6 @@ impl DecodableMachineOp for JumpOp {
         func7: u8,
     ) -> Result<
         (
-            InstructionOperandSelectionData,
             InstructionType,
             DecoderMajorInstructionFamilyKey,
             &'static [DecoderInstructionVariantsKey],
@@ -26,7 +25,6 @@ impl DecodableMachineOp for JumpOp {
             (OPERATION_JAL, _, _) => {
                 // JAL
                 (
-                    BASE_J_TYPE_AUX_DATA,
                     InstructionType::JType,
                     JUMP_COMMON_OP_KEY,
                     &[JAL_OP_KEY][..],
@@ -34,12 +32,7 @@ impl DecodableMachineOp for JumpOp {
             }
             (OPERATION_JALR, 0b000, _) => {
                 // JALR
-                (
-                    BASE_I_TYPE_AUX_DATA,
-                    InstructionType::IType,
-                    JUMP_COMMON_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::IType, JUMP_COMMON_OP_KEY, &[][..])
             }
             _ => return Err(()),
         };

@@ -15,7 +15,6 @@ impl DecodableMachineOp for LuiOp {
         func7: u8,
     ) -> Result<
         (
-            InstructionOperandSelectionData,
             InstructionType,
             DecoderMajorInstructionFamilyKey,
             &'static [DecoderInstructionVariantsKey],
@@ -25,12 +24,7 @@ impl DecodableMachineOp for LuiOp {
         let params = match (opcode, func3, func7) {
             (OPERATION_LUI, _, _) => {
                 // LUI
-                (
-                    BASE_U_TYPE_AUX_DATA,
-                    InstructionType::UType,
-                    LUI_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::UType, LUI_OP_KEY, &[][..])
             }
             _ => return Err(()),
         };
@@ -95,7 +89,6 @@ impl DecodableMachineOp for AuiPc {
         func7: u8,
     ) -> Result<
         (
-            InstructionOperandSelectionData,
             InstructionType,
             DecoderMajorInstructionFamilyKey,
             &'static [DecoderInstructionVariantsKey],
@@ -105,12 +98,7 @@ impl DecodableMachineOp for AuiPc {
         let params = match (opcode, func3, func7) {
             (OPERATION_AUIPC, _, _) => {
                 // AUIPC
-                (
-                    BASE_U_TYPE_AUX_DATA,
-                    InstructionType::UType,
-                    AUIPC_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::UType, AUIPC_OP_KEY, &[][..])
             }
             _ => return Err(()),
         };

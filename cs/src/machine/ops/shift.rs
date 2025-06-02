@@ -24,7 +24,6 @@ impl<const SUPPORT_SRA: bool, const SUPPORT_ROT: bool> DecodableMachineOp
         func7: u8,
     ) -> Result<
         (
-            InstructionOperandSelectionData,
             InstructionType,
             DecoderMajorInstructionFamilyKey,
             &'static [DecoderInstructionVariantsKey],
@@ -34,17 +33,11 @@ impl<const SUPPORT_SRA: bool, const SUPPORT_ROT: bool> DecodableMachineOp
         let params = match (opcode, func3, func7) {
             (OPERATION_OP_IMM, 0b001, 0) => {
                 // SLLI
-                (
-                    BASE_I_TYPE_AUX_DATA,
-                    InstructionType::IType,
-                    SHIFT_COMMON_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::IType, SHIFT_COMMON_OP_KEY, &[][..])
             }
             (OPERATION_OP_IMM, 0b101, 0) => {
                 // SRLI
                 (
-                    BASE_I_TYPE_AUX_DATA,
                     InstructionType::IType,
                     SHIFT_COMMON_OP_KEY,
                     &[SHIFT_RIGHT_KEY][..],
@@ -53,7 +46,6 @@ impl<const SUPPORT_SRA: bool, const SUPPORT_ROT: bool> DecodableMachineOp
             (OPERATION_OP_IMM, 0b101, 0b010_0000) if SUPPORT_SRA => {
                 // SRAI
                 (
-                    BASE_I_TYPE_AUX_DATA,
                     InstructionType::IType,
                     SHIFT_COMMON_OP_KEY,
                     &[SHIFT_RIGHT_KEY, SHIFT_RIGHT_ALGEBRAIC_KEY][..],
@@ -62,7 +54,6 @@ impl<const SUPPORT_SRA: bool, const SUPPORT_ROT: bool> DecodableMachineOp
             (OPERATION_OP_IMM, 0b101, 0b011_0000) if SUPPORT_ROT => {
                 // RORI
                 (
-                    BASE_I_TYPE_AUX_DATA,
                     InstructionType::IType,
                     SHIFT_COMMON_OP_KEY,
                     &[SHIFT_RIGHT_KEY, SHIFT_CYCLIC_KEY][..],
@@ -70,17 +61,11 @@ impl<const SUPPORT_SRA: bool, const SUPPORT_ROT: bool> DecodableMachineOp
             }
             (OPERATION_OP, 0b001, 0) => {
                 // SLL
-                (
-                    BASE_R_TYPE_AUX_DATA,
-                    InstructionType::RType,
-                    SHIFT_COMMON_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::RType, SHIFT_COMMON_OP_KEY, &[][..])
             }
             (OPERATION_OP, 0b101, 0) => {
                 // SRL
                 (
-                    BASE_R_TYPE_AUX_DATA,
                     InstructionType::RType,
                     SHIFT_COMMON_OP_KEY,
                     &[SHIFT_RIGHT_KEY][..],
@@ -89,7 +74,6 @@ impl<const SUPPORT_SRA: bool, const SUPPORT_ROT: bool> DecodableMachineOp
             (OPERATION_OP, 0b101, 0b010_0000) if SUPPORT_SRA => {
                 // SRA
                 (
-                    BASE_R_TYPE_AUX_DATA,
                     InstructionType::RType,
                     SHIFT_COMMON_OP_KEY,
                     &[SHIFT_RIGHT_KEY, SHIFT_RIGHT_ALGEBRAIC_KEY][..],
@@ -98,7 +82,6 @@ impl<const SUPPORT_SRA: bool, const SUPPORT_ROT: bool> DecodableMachineOp
             (OPERATION_OP, 0b001, 0b011_0000) if SUPPORT_ROT => {
                 // ROL
                 (
-                    BASE_R_TYPE_AUX_DATA,
                     InstructionType::RType,
                     SHIFT_COMMON_OP_KEY,
                     &[SHIFT_CYCLIC_KEY][..],
@@ -107,7 +90,6 @@ impl<const SUPPORT_SRA: bool, const SUPPORT_ROT: bool> DecodableMachineOp
             (OPERATION_OP, 0b101, 0b011_0000) if SUPPORT_ROT => {
                 // ROR
                 (
-                    BASE_R_TYPE_AUX_DATA,
                     InstructionType::RType,
                     SHIFT_COMMON_OP_KEY,
                     &[SHIFT_RIGHT_KEY, SHIFT_CYCLIC_KEY][..],

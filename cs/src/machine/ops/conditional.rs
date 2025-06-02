@@ -14,7 +14,6 @@ impl<const SUPPORT_SIGNED: bool> DecodableMachineOp for ConditionalOp<SUPPORT_SI
         func7: u8,
     ) -> Result<
         (
-            InstructionOperandSelectionData,
             InstructionType,
             DecoderMajorInstructionFamilyKey,
             &'static [DecoderInstructionVariantsKey],
@@ -24,93 +23,43 @@ impl<const SUPPORT_SIGNED: bool> DecodableMachineOp for ConditionalOp<SUPPORT_SI
         let params = match (opcode, func3, func7) {
             (OPERATION_OP_IMM, 0b010, _) if SUPPORT_SIGNED => {
                 // SLTI
-                (
-                    BASE_I_TYPE_AUX_DATA,
-                    InstructionType::IType,
-                    CONDITIONAL_COMMON_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::IType, CONDITIONAL_COMMON_OP_KEY, &[][..])
             }
             (OPERATION_OP_IMM, 0b011, _) => {
                 // SLTIU
-                (
-                    BASE_I_TYPE_AUX_DATA,
-                    InstructionType::IType,
-                    CONDITIONAL_COMMON_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::IType, CONDITIONAL_COMMON_OP_KEY, &[][..])
             }
             (OPERATION_OP, 0b010, 0) if SUPPORT_SIGNED => {
                 // SLT
-                (
-                    BASE_R_TYPE_AUX_DATA,
-                    InstructionType::RType,
-                    CONDITIONAL_COMMON_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::RType, CONDITIONAL_COMMON_OP_KEY, &[][..])
             }
             (OPERATION_OP, 0b011, 0) => {
                 // SLTU
-                (
-                    BASE_R_TYPE_AUX_DATA,
-                    InstructionType::RType,
-                    CONDITIONAL_COMMON_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::RType, CONDITIONAL_COMMON_OP_KEY, &[][..])
             }
             (OPERATION_BRANCH, 0b000, _) => {
                 // BEQ
-                (
-                    BASE_B_TYPE_AUX_DATA,
-                    InstructionType::BType,
-                    CONDITIONAL_COMMON_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::BType, CONDITIONAL_COMMON_OP_KEY, &[][..])
             }
             (OPERATION_BRANCH, 0b001, _) => {
                 // BNE
-                (
-                    BASE_B_TYPE_AUX_DATA,
-                    InstructionType::BType,
-                    CONDITIONAL_COMMON_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::BType, CONDITIONAL_COMMON_OP_KEY, &[][..])
             }
             (OPERATION_BRANCH, 0b100, _) if SUPPORT_SIGNED => {
                 // BLT
-                (
-                    BASE_B_TYPE_AUX_DATA,
-                    InstructionType::BType,
-                    CONDITIONAL_COMMON_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::BType, CONDITIONAL_COMMON_OP_KEY, &[][..])
             }
             (OPERATION_BRANCH, 0b101, _) if SUPPORT_SIGNED => {
                 // BGE
-                (
-                    BASE_B_TYPE_AUX_DATA,
-                    InstructionType::BType,
-                    CONDITIONAL_COMMON_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::BType, CONDITIONAL_COMMON_OP_KEY, &[][..])
             }
             (OPERATION_BRANCH, 0b110, _) => {
                 // BLTU
-                (
-                    BASE_B_TYPE_AUX_DATA,
-                    InstructionType::BType,
-                    CONDITIONAL_COMMON_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::BType, CONDITIONAL_COMMON_OP_KEY, &[][..])
             }
             (OPERATION_BRANCH, 0b111, _) => {
                 // BGEU
-                (
-                    BASE_B_TYPE_AUX_DATA,
-                    InstructionType::BType,
-                    CONDITIONAL_COMMON_OP_KEY,
-                    &[][..],
-                )
+                (InstructionType::BType, CONDITIONAL_COMMON_OP_KEY, &[][..])
             }
             _ => return Err(()),
         };

@@ -148,7 +148,6 @@ pub trait DecodableMachineOp: 'static + Debug {
         func7: u8,
     ) -> Result<
         (
-            InstructionOperandSelectionData,
             InstructionType,
             DecoderMajorInstructionFamilyKey,
             &'static [DecoderInstructionVariantsKey],
@@ -224,7 +223,7 @@ pub trait Machine<F: PrimeField>: 'static + Clone + Default {
                 for funct7 in 0..(1u8 << 7) {
                     let mut found = false;
                     'inner: for supported_opcode in all_opcodes.iter() {
-                        if let Ok((_decoder_props, instr_format, major_key, minor_keys)) =
+                        if let Ok((instr_format, major_key, minor_keys)) =
                             supported_opcode.define_decoder_subspace(opcode, funct3, funct7)
                         {
                             // there is some opcode that supports it, so just continue now
@@ -328,7 +327,7 @@ pub trait Machine<F: PrimeField>: 'static + Clone + Default {
                     let concatenated_key =
                         opcode as u32 + ((funct3 as u32) << 7) + ((funct7 as u32) << 10);
                     'inner: for supported_opcode in all_opcodes.iter() {
-                        if let Ok((_decoder_props, instr_format, major_key, minor_keys)) =
+                        if let Ok((instr_format, major_key, minor_keys)) =
                             supported_opcode.define_decoder_subspace(opcode, funct3, funct7)
                         {
                             // there is some opcode that supports it, so just continue now

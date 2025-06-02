@@ -26,7 +26,6 @@ impl<const SUPPORT_SIGNED: bool, const SUPPORT_LESS_THAN_WORD: bool> DecodableMa
         func7: u8,
     ) -> Result<
         (
-            InstructionOperandSelectionData,
             InstructionType,
             DecoderMajorInstructionFamilyKey,
             &'static [DecoderInstructionVariantsKey],
@@ -37,7 +36,6 @@ impl<const SUPPORT_SIGNED: bool, const SUPPORT_LESS_THAN_WORD: bool> DecodableMa
             (OPERATION_LOAD, 0b000, _) if SUPPORT_SIGNED & SUPPORT_LESS_THAN_WORD => {
                 // LB
                 (
-                    BASE_I_TYPE_AUX_DATA,
                     InstructionType::IType,
                     MEMORY_COMMON_OP_KEY,
                     &[ACCESS_BYTE_OP_KEY, SIGN_EXTEND_ON_LOAD_OP_KEY][..],
@@ -46,7 +44,6 @@ impl<const SUPPORT_SIGNED: bool, const SUPPORT_LESS_THAN_WORD: bool> DecodableMa
             (OPERATION_LOAD, 0b001, _) if SUPPORT_SIGNED & SUPPORT_LESS_THAN_WORD => {
                 // LH
                 (
-                    BASE_I_TYPE_AUX_DATA,
                     InstructionType::IType,
                     MEMORY_COMMON_OP_KEY,
                     &[ACCESS_HALF_WORD_OP_KEY, SIGN_EXTEND_ON_LOAD_OP_KEY][..],
@@ -56,24 +53,17 @@ impl<const SUPPORT_SIGNED: bool, const SUPPORT_LESS_THAN_WORD: bool> DecodableMa
                 // LW
                 if SUPPORT_LESS_THAN_WORD {
                     (
-                        BASE_I_TYPE_AUX_DATA,
                         InstructionType::IType,
                         MEMORY_COMMON_OP_KEY,
                         &[ACCESS_WORD_OP_KEY][..],
                     )
                 } else {
-                    (
-                        BASE_I_TYPE_AUX_DATA,
-                        InstructionType::IType,
-                        MEMORY_COMMON_OP_KEY,
-                        &[][..],
-                    )
+                    (InstructionType::IType, MEMORY_COMMON_OP_KEY, &[][..])
                 }
             }
             (OPERATION_LOAD, 0b100, _) if SUPPORT_LESS_THAN_WORD => {
                 // LBU
                 (
-                    BASE_I_TYPE_AUX_DATA,
                     InstructionType::IType,
                     MEMORY_COMMON_OP_KEY,
                     &[ACCESS_BYTE_OP_KEY][..],
@@ -82,7 +72,6 @@ impl<const SUPPORT_SIGNED: bool, const SUPPORT_LESS_THAN_WORD: bool> DecodableMa
             (OPERATION_LOAD, 0b101, _) if SUPPORT_LESS_THAN_WORD => {
                 // LHU
                 (
-                    BASE_I_TYPE_AUX_DATA,
                     InstructionType::IType,
                     MEMORY_COMMON_OP_KEY,
                     &[ACCESS_HALF_WORD_OP_KEY][..],
@@ -91,7 +80,6 @@ impl<const SUPPORT_SIGNED: bool, const SUPPORT_LESS_THAN_WORD: bool> DecodableMa
             (OPERATION_STORE, 0b000, _) if SUPPORT_LESS_THAN_WORD => {
                 // SB
                 (
-                    BASE_S_TYPE_AUX_DATA,
                     InstructionType::SType,
                     MEMORY_COMMON_OP_KEY,
                     &[ACCESS_BYTE_OP_KEY, MEMORY_WRITE_COMMON_OP_KEY][..],
@@ -100,7 +88,6 @@ impl<const SUPPORT_SIGNED: bool, const SUPPORT_LESS_THAN_WORD: bool> DecodableMa
             (OPERATION_STORE, 0b001, _) if SUPPORT_LESS_THAN_WORD => {
                 // SH
                 (
-                    BASE_S_TYPE_AUX_DATA,
                     InstructionType::SType,
                     MEMORY_COMMON_OP_KEY,
                     &[ACCESS_HALF_WORD_OP_KEY, MEMORY_WRITE_COMMON_OP_KEY][..],
@@ -110,14 +97,12 @@ impl<const SUPPORT_SIGNED: bool, const SUPPORT_LESS_THAN_WORD: bool> DecodableMa
                 // SW
                 if SUPPORT_LESS_THAN_WORD {
                     (
-                        BASE_S_TYPE_AUX_DATA,
                         InstructionType::SType,
                         MEMORY_COMMON_OP_KEY,
                         &[ACCESS_WORD_OP_KEY, MEMORY_WRITE_COMMON_OP_KEY][..],
                     )
                 } else {
                     (
-                        BASE_S_TYPE_AUX_DATA,
                         InstructionType::SType,
                         MEMORY_COMMON_OP_KEY,
                         &[MEMORY_WRITE_COMMON_OP_KEY][..],

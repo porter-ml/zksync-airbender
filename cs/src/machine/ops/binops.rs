@@ -2,9 +2,11 @@ use super::*;
 
 pub const BINOP_COMMON_OP_KEY: DecoderMajorInstructionFamilyKey =
     DecoderMajorInstructionFamilyKey("BINOP_COMMON_KEY");
-pub const AND_OP_KEY: DecoderInstructionVariantsKey = DecoderInstructionVariantsKey("AND/ANDI");
-pub const OR_OP_KEY: DecoderInstructionVariantsKey = DecoderInstructionVariantsKey("OR/ORI");
-pub const XOR_OP_KEY: DecoderInstructionVariantsKey = DecoderInstructionVariantsKey("XOR/XORI");
+// NOTE: We do not need these as we are using funct3 instead
+
+// pub const AND_OP_KEY: DecoderInstructionVariantsKey = DecoderInstructionVariantsKey("AND/ANDI");
+// pub const OR_OP_KEY: DecoderInstructionVariantsKey = DecoderInstructionVariantsKey("OR/ORI");
+// pub const XOR_OP_KEY: DecoderInstructionVariantsKey = DecoderInstructionVariantsKey("XOR/XORI");
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct BinaryOp;
@@ -17,7 +19,6 @@ impl DecodableMachineOp for BinaryOp {
         func7: u8,
     ) -> Result<
         (
-            InstructionOperandSelectionData,
             InstructionType,
             DecoderMajorInstructionFamilyKey,
             &'static [DecoderInstructionVariantsKey],
@@ -28,55 +29,55 @@ impl DecodableMachineOp for BinaryOp {
             (OPERATION_OP, 0b111, 0b000_0000) => {
                 // AND
                 (
-                    BASE_R_TYPE_AUX_DATA,
                     InstructionType::RType,
                     BINOP_COMMON_OP_KEY,
-                    &[AND_OP_KEY][..],
+                    &[][..],
+                    // &[AND_OP_KEY][..],
                 )
             }
             (OPERATION_OP_IMM, 0b111, _) => {
                 // ANDI
                 (
-                    BASE_I_TYPE_AUX_DATA,
                     InstructionType::IType,
                     BINOP_COMMON_OP_KEY,
-                    &[AND_OP_KEY][..],
+                    &[][..],
+                    // &[AND_OP_KEY][..],
                 )
             }
             (OPERATION_OP, 0b110, 0b000_0000) => {
                 // OR
                 (
-                    BASE_R_TYPE_AUX_DATA,
                     InstructionType::RType,
                     BINOP_COMMON_OP_KEY,
-                    &[OR_OP_KEY][..],
+                    &[][..],
+                    // &[OR_OP_KEY][..],
                 )
             }
             (OPERATION_OP_IMM, 0b110, _) => {
                 // ORI
                 (
-                    BASE_I_TYPE_AUX_DATA,
                     InstructionType::IType,
                     BINOP_COMMON_OP_KEY,
-                    &[OR_OP_KEY][..],
+                    &[][..],
+                    // &[OR_OP_KEY][..],
                 )
             }
             (OPERATION_OP, 0b100, 0b000_0000) => {
                 // XOR
                 (
-                    BASE_R_TYPE_AUX_DATA,
                     InstructionType::RType,
                     BINOP_COMMON_OP_KEY,
-                    &[XOR_OP_KEY][..],
+                    &[][..],
+                    // &[XOR_OP_KEY][..],
                 )
             }
             (OPERATION_OP_IMM, 0b100, _) => {
-                // ANDI
+                // XORI
                 (
-                    BASE_I_TYPE_AUX_DATA,
                     InstructionType::IType,
                     BINOP_COMMON_OP_KEY,
-                    &[XOR_OP_KEY][..],
+                    &[][..],
+                    // &[XOR_OP_KEY][..],
                 )
             }
             _ => return Err(()),
