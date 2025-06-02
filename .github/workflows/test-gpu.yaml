@@ -11,7 +11,7 @@ jobs:
     runs-on: [ ubuntu-latest ]
     strategy:
       matrix:
-        cuda: [ "12.5.0-devel-ubuntu20.04" ]
+        cuda: [ "12.6.0-devel-ubuntu20.04" ]
         package: [ "zksmith" ]
     container:
       image: nvidia/cuda:${{ matrix.cuda }}
@@ -115,15 +115,15 @@ jobs:
           tar xvfz bellman-cuda-source.tar.gz -C ./bellman-cuda --strip-components=1 --wildcards \*/src/
 
 
-      - name: Download test binary built with CUDA 12.5
+      - name: Download test binary built with CUDA 12.6
         uses: actions/download-artifact@v4
         with:
-          name: zksync-airbender-12.5.0-devel-ubuntu20.04-${{ matrix.package }}-test-binary
-          path: zksync-airbender-test-binary/12.5/
+          name: zksync-airbender-12.6.0-devel-ubuntu20.04-${{ matrix.package }}-test-binary
+          path: zksync-airbender-test-binary/12.6/
 
-      - name: Run test binary built with CUDA 12.5
+      - name: Run test binary built with CUDA 12.6
         id: test_cuda_12_5
         continue-on-error: true
         run: |
-          chmod +x zksync-airbender-test-binary/12.5/${{ matrix.package }}
-          zksync-airbender-test-binary/12.5/${{ matrix.package }} --nocapture
+          chmod +x zksync-airbender-test-binary/12.6/${{ matrix.package }}
+          zksync-airbender-test-binary/12.6/${{ matrix.package }} --nocapture
