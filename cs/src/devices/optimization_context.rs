@@ -6,11 +6,11 @@ use crate::cs::utils::{
     collapse_max_quadratic_constraint_into, mask_by_boolean_into_accumulator_constraint,
 };
 use crate::cs::witness_placer::cs_debug_evaluator::witness_early_branch_if_possible;
-use crate::cs::witness_placer::WitnessTypeSet;
 use crate::cs::witness_placer::{
     WitnessComputationCore, WitnessComputationalInteger, WitnessComputationalU16,
     WitnessComputationalU32, WitnessPlacer,
 };
+use crate::cs::witness_placer::{WitnessComputationalField, WitnessTypeSet};
 use crate::definitions::*;
 use crate::one_row_compiler::LookupInput;
 use crate::types::*;
@@ -1111,16 +1111,15 @@ impl<F: PrimeField, CS: Circuit<F>> OptimizationContext<F, CS> {
             let mul_low = Register::choose_from_orthogonal_variants::<CS>(cs, &flags, &mul_low_s);
             let mul_high = Register::choose_from_orthogonal_variants::<CS>(cs, &flags, &mul_high_s);
 
-            let op1_decomposition =
-                RegisterDecomposition::parse_reg::<CS>(cs, op1).u8_decomposition;
-            let op2_decomposition =
-                RegisterDecomposition::parse_reg::<CS>(cs, op2).u8_decomposition;
+            let op1_decomposition = RegisterDecomposition::make_u8_chunks::<CS>(cs, op1);
+            let op2_decomposition = RegisterDecomposition::make_u8_chunks::<CS>(cs, op2);
 
             const NUM_BYTES: usize = 4;
-            const NUM_BYTES_DOUBLED: usize = 8;
+            const NUM_BYTES_DOUBLED: usize = NUM_BYTES * 2;
 
             // https://faculty-web.msoe.edu/johnsontimoj/Common/FILES/binary_multiplication.pdf
             // In 2’s complement you must sign extend to the product bit width
+
             let op1_sign_t = match op1_sign {
                 Num::Var(op1_sign_var) => Term::from((F::from_u64_unchecked(0xff), op1_sign_var)),
                 Num::Constant(op1_sign_constant) => {
@@ -1147,18 +1146,31 @@ impl<F: PrimeField, CS: Circuit<F>> OptimizationContext<F, CS> {
                 }
             };
 
-            let op1_t: [Term<F>; NUM_BYTES_DOUBLED] = std::array::from_fn(|idx: usize| {
+            let op1_t: [Constraint<F>; NUM_BYTES_DOUBLED] = std::array::from_fn(|idx: usize| {
                 if idx < NUM_BYTES {
-                    Term::from(op1_decomposition[idx])
+                    let major = idx / 2;
+                    let minor = idx % 1;
+                    if minor == 0 {
+                        Constraint::from(op1_decomposition[major].0)
+                    } else {
+                        op1_decomposition[major].1.clone()
+                    }
                 } else {
-                    op1_sign_t
+                    Constraint::from(op1_sign_t)
                 }
             });
-            let op2_t: [Term<F>; NUM_BYTES_DOUBLED] = std::array::from_fn(|idx: usize| {
+
+            let op2_t: [Constraint<F>; NUM_BYTES_DOUBLED] = std::array::from_fn(|idx: usize| {
                 if idx < NUM_BYTES {
-                    Term::from(op2_decomposition[idx])
+                    let major = idx / 2;
+                    let minor = idx % 1;
+                    if minor == 0 {
+                        Constraint::from(op2_decomposition[major].0)
+                    } else {
+                        op2_decomposition[major].1.clone()
+                    }
                 } else {
-                    op2_sign_t
+                    Constraint::from(op2_sign_t)
                 }
             });
 
@@ -1202,6 +1214,8 @@ impl<F: PrimeField, CS: Circuit<F>> OptimizationContext<F, CS> {
             //  - 3 * (1 + 4) = 15 variables for unsigned case
             // So it's almost one for another, and we will stick with booleans
 
+            use crate::cs::utils::PreprocessedConstraintForEval;
+
             // lowest 16 bits
             let carry = {
                 // set values before constraint
@@ -1216,19 +1230,18 @@ impl<F: PrimeField, CS: Circuit<F>> OptimizationContext<F, CS> {
                     let byte_var = byte;
                     let bit_var = bit.get_variable().unwrap();
 
-                    let op1_0 = op1_t[0].get_variable().unwrap();
-                    let op1_1 = op1_t[1].get_variable().unwrap();
-                    let op2_0 = op2_t[0].get_variable().unwrap();
-                    let op2_1 = op2_t[1].get_variable().unwrap();
+                    let op1_0 = PreprocessedConstraintForEval::from_constraint(op1_t[0].clone());
+                    let op1_1 = PreprocessedConstraintForEval::from_constraint(op1_t[1].clone());
+                    let op2_0 = PreprocessedConstraintForEval::from_constraint(op2_t[0].clone());
+                    let op2_1 = PreprocessedConstraintForEval::from_constraint(op2_t[1].clone());
+
                     let add_term_t_low = add_term_t[0].get_variable().unwrap();
                     let mul_low_t_low = mul_low_t[0].get_variable().unwrap();
                     let value_fn = move |placer: &mut CS::WitnessPlacer| {
-                        use crate::cs::witness_placer::WitnessComputationalU8;
-
-                        let op1_0 = placer.get_u8(op1_0).widen().widen();
-                        let op1_1 = placer.get_u8(op1_1).widen().widen();
-                        let op2_0 = placer.get_u8(op2_0).widen().widen();
-                        let op2_1 = placer.get_u8(op2_1).widen().widen();
+                        let op1_0 = op1_0.evaluate_with_placer(placer).as_integer();
+                        let op1_1 = op1_1.evaluate_with_placer(placer).as_integer();
+                        let op2_0 = op2_0.evaluate_with_placer(placer).as_integer();
+                        let op2_1 = op2_1.evaluate_with_placer(placer).as_integer();
                         let additive_term = placer.get_u16(add_term_t_low).widen();
                         let multiplicative_dest = placer.get_u16(mul_low_t_low).widen();
 
@@ -1252,9 +1265,9 @@ impl<F: PrimeField, CS: Circuit<F>> OptimizationContext<F, CS> {
                 }
 
                 let mut cnstr = Constraint::empty();
-                cnstr = cnstr + op1_t[0] * op2_t[0];
-                cnstr = cnstr + op1_t[0] * op2_t[1] * byte_shift_t;
-                cnstr = cnstr + op1_t[1] * op2_t[0] * byte_shift_t;
+                cnstr = cnstr + op1_t[0].clone() * op2_t[0].clone();
+                cnstr = cnstr + op1_t[0].clone() * op2_t[1].clone() * byte_shift_t;
+                cnstr = cnstr + op1_t[1].clone() * op2_t[0].clone() * byte_shift_t;
                 cnstr += add_term_t[0];
                 cnstr -= mul_low_t[0];
 
@@ -1283,28 +1296,29 @@ impl<F: PrimeField, CS: Circuit<F>> OptimizationContext<F, CS> {
                     let bit_0_var = bit_0.get_variable().unwrap();
                     let bit_1_var = bit_1.get_variable().unwrap();
 
-                    let op1_0 = op1_t[0].get_variable().unwrap();
-                    let op1_1 = op1_t[1].get_variable().unwrap();
-                    let op1_2 = op1_t[2].get_variable().unwrap();
-                    let op1_3 = op1_t[3].get_variable().unwrap();
-                    let op2_0 = op2_t[0].get_variable().unwrap();
-                    let op2_1 = op2_t[1].get_variable().unwrap();
-                    let op2_2 = op2_t[2].get_variable().unwrap();
-                    let op2_3 = op2_t[3].get_variable().unwrap();
+                    let op1_0 = PreprocessedConstraintForEval::from_constraint(op1_t[0].clone());
+                    let op1_1 = PreprocessedConstraintForEval::from_constraint(op1_t[1].clone());
+                    let op1_2 = PreprocessedConstraintForEval::from_constraint(op1_t[2].clone());
+                    let op1_3 = PreprocessedConstraintForEval::from_constraint(op1_t[3].clone());
+                    let op2_0 = PreprocessedConstraintForEval::from_constraint(op2_t[0].clone());
+                    let op2_1 = PreprocessedConstraintForEval::from_constraint(op2_t[1].clone());
+                    let op2_2 = PreprocessedConstraintForEval::from_constraint(op2_t[2].clone());
+                    let op2_3 = PreprocessedConstraintForEval::from_constraint(op2_t[3].clone());
+
                     let add_term_t_high = add_term_t[1].get_variable().unwrap();
                     let mul_low_t_high = mul_low_t[1].get_variable().unwrap();
 
                     let value_fn = move |placer: &mut CS::WitnessPlacer| {
                         use crate::cs::witness_placer::*;
 
-                        let op1_0 = placer.get_u8(op1_0).widen().widen();
-                        let op1_1 = placer.get_u8(op1_1).widen().widen();
-                        let op1_2 = placer.get_u8(op1_2).widen().widen();
-                        let op1_3 = placer.get_u8(op1_3).widen().widen();
-                        let op2_0 = placer.get_u8(op2_0).widen().widen();
-                        let op2_1 = placer.get_u8(op2_1).widen().widen();
-                        let op2_2 = placer.get_u8(op2_2).widen().widen();
-                        let op2_3 = placer.get_u8(op2_3).widen().widen();
+                        let op1_0 = op1_0.evaluate_with_placer(placer).as_integer();
+                        let op1_1 = op1_1.evaluate_with_placer(placer).as_integer();
+                        let op1_2 = op1_2.evaluate_with_placer(placer).as_integer();
+                        let op1_3 = op1_3.evaluate_with_placer(placer).as_integer();
+                        let op2_0 = op2_0.evaluate_with_placer(placer).as_integer();
+                        let op2_1 = op2_1.evaluate_with_placer(placer).as_integer();
+                        let op2_2 = op2_2.evaluate_with_placer(placer).as_integer();
+                        let op2_3 = op2_3.evaluate_with_placer(placer).as_integer();
 
                         let additive_term = placer.get_u16(add_term_t_high).widen();
                         let multiplicative_dest = placer.get_u16(mul_low_t_high).widen();
@@ -1350,13 +1364,13 @@ impl<F: PrimeField, CS: Circuit<F>> OptimizationContext<F, CS> {
                 cnstr += Term::from((F::from_u64_unchecked(1u64 << carry[0].1), carry[0].0));
                 cnstr += Term::from((F::from_u64_unchecked(1u64 << carry[1].1), carry[1].0));
 
-                cnstr = cnstr + op1_t[0] * op2_t[2];
-                cnstr = cnstr + op1_t[0] * op2_t[3] * byte_shift_t;
-                cnstr = cnstr + op1_t[1] * op2_t[1];
-                cnstr = cnstr + op1_t[1] * op2_t[2] * byte_shift_t;
-                cnstr = cnstr + op1_t[2] * op2_t[0];
-                cnstr = cnstr + op1_t[2] * op2_t[1] * byte_shift_t;
-                cnstr = cnstr + op1_t[3] * op2_t[0] * byte_shift_t;
+                cnstr = cnstr + op1_t[0].clone() * op2_t[2].clone();
+                cnstr = cnstr + op1_t[0].clone() * op2_t[3].clone() * byte_shift_t;
+                cnstr = cnstr + op1_t[1].clone() * op2_t[1].clone();
+                cnstr = cnstr + op1_t[1].clone() * op2_t[2].clone() * byte_shift_t;
+                cnstr = cnstr + op1_t[2].clone() * op2_t[0].clone();
+                cnstr = cnstr + op1_t[2].clone() * op2_t[1].clone() * byte_shift_t;
+                cnstr = cnstr + op1_t[3].clone() * op2_t[0].clone() * byte_shift_t;
                 cnstr += add_term_t[1];
                 cnstr -= mul_low_t[1];
 
@@ -1407,27 +1421,36 @@ impl<F: PrimeField, CS: Circuit<F>> OptimizationContext<F, CS> {
                             let bit_1_var = bit_1.get_variable().unwrap();
                             let bit_2_var = bit_2.get_variable().unwrap();
 
-                            let op1_0 = op1_t[0].get_variable().unwrap();
-                            let op1_1 = op1_t[1].get_variable().unwrap();
-                            let op1_2 = op1_t[2].get_variable().unwrap();
-                            let op1_3 = op1_t[3].get_variable().unwrap();
-                            let op2_0 = op2_t[0].get_variable().unwrap();
-                            let op2_1 = op2_t[1].get_variable().unwrap();
-                            let op2_2 = op2_t[2].get_variable().unwrap();
-                            let op2_3 = op2_t[3].get_variable().unwrap();
+                            let op1_0 =
+                                PreprocessedConstraintForEval::from_constraint(op1_t[0].clone());
+                            let op1_1 =
+                                PreprocessedConstraintForEval::from_constraint(op1_t[1].clone());
+                            let op1_2 =
+                                PreprocessedConstraintForEval::from_constraint(op1_t[2].clone());
+                            let op1_3 =
+                                PreprocessedConstraintForEval::from_constraint(op1_t[3].clone());
+                            let op2_0 =
+                                PreprocessedConstraintForEval::from_constraint(op2_t[0].clone());
+                            let op2_1 =
+                                PreprocessedConstraintForEval::from_constraint(op2_t[1].clone());
+                            let op2_2 =
+                                PreprocessedConstraintForEval::from_constraint(op2_t[2].clone());
+                            let op2_3 =
+                                PreprocessedConstraintForEval::from_constraint(op2_t[3].clone());
+
                             let mul_high_t_low = mul_high_t[0].get_variable().unwrap();
 
                             let value_fn = move |placer: &mut CS::WitnessPlacer| {
                                 use crate::cs::witness_placer::*;
 
-                                let op1_0 = placer.get_u8(op1_0).widen().widen();
-                                let op1_1 = placer.get_u8(op1_1).widen().widen();
-                                let op1_2 = placer.get_u8(op1_2).widen().widen();
-                                let op1_3 = placer.get_u8(op1_3).widen().widen();
-                                let op2_0 = placer.get_u8(op2_0).widen().widen();
-                                let op2_1 = placer.get_u8(op2_1).widen().widen();
-                                let op2_2 = placer.get_u8(op2_2).widen().widen();
-                                let op2_3 = placer.get_u8(op2_3).widen().widen();
+                                let op1_0 = op1_0.evaluate_with_placer(placer).as_integer();
+                                let op1_1 = op1_1.evaluate_with_placer(placer).as_integer();
+                                let op1_2 = op1_2.evaluate_with_placer(placer).as_integer();
+                                let op1_3 = op1_3.evaluate_with_placer(placer).as_integer();
+                                let op2_0 = op2_0.evaluate_with_placer(placer).as_integer();
+                                let op2_1 = op2_1.evaluate_with_placer(placer).as_integer();
+                                let op2_2 = op2_2.evaluate_with_placer(placer).as_integer();
+                                let op2_3 = op2_3.evaluate_with_placer(placer).as_integer();
 
                                 let byte_sign_ext =
                                     <CS::WitnessPlacer as WitnessTypeSet<F>>::U32::constant(0xff);
@@ -1522,17 +1545,17 @@ impl<F: PrimeField, CS: Circuit<F>> OptimizationContext<F, CS> {
                         cnstr +=
                             Term::from((F::from_u64_unchecked(1u64 << carry[2].1), carry[2].0));
 
-                        cnstr = cnstr + op1_t[0] * op2_t[4];
-                        cnstr = cnstr + op1_t[0] * op2_t[5] * byte_shift_t;
-                        cnstr = cnstr + op1_t[1] * op2_t[3];
-                        cnstr = cnstr + op1_t[1] * op2_t[4] * byte_shift_t;
-                        cnstr = cnstr + op1_t[2] * op2_t[2];
-                        cnstr = cnstr + op1_t[2] * op2_t[3] * byte_shift_t;
-                        cnstr = cnstr + op1_t[3] * op2_t[1];
-                        cnstr = cnstr + op1_t[3] * op2_t[2] * byte_shift_t;
-                        cnstr = cnstr + op1_t[4] * op2_t[0];
-                        cnstr = cnstr + op1_t[4] * op2_t[1] * byte_shift_t;
-                        cnstr = cnstr + op1_t[5] * op2_t[0] * byte_shift_t;
+                        cnstr = cnstr + op1_t[0].clone() * op2_t[4].clone();
+                        cnstr = cnstr + op1_t[0].clone() * op2_t[5].clone() * byte_shift_t;
+                        cnstr = cnstr + op1_t[1].clone() * op2_t[3].clone();
+                        cnstr = cnstr + op1_t[1].clone() * op2_t[4].clone() * byte_shift_t;
+                        cnstr = cnstr + op1_t[2].clone() * op2_t[2].clone();
+                        cnstr = cnstr + op1_t[2].clone() * op2_t[3].clone() * byte_shift_t;
+                        cnstr = cnstr + op1_t[3].clone() * op2_t[1].clone();
+                        cnstr = cnstr + op1_t[3].clone() * op2_t[2].clone() * byte_shift_t;
+                        cnstr = cnstr + op1_t[4].clone() * op2_t[0].clone();
+                        cnstr = cnstr + op1_t[4].clone() * op2_t[1].clone() * byte_shift_t;
+                        cnstr = cnstr + op1_t[5].clone() * op2_t[0].clone() * byte_shift_t;
                         cnstr += sign_term;
                         cnstr -= mul_high_t[0];
 
@@ -1578,27 +1601,36 @@ impl<F: PrimeField, CS: Circuit<F>> OptimizationContext<F, CS> {
                             let bit_1_var = bit_1.get_variable().unwrap();
                             let bit_2_var = bit_2.get_variable().unwrap();
 
-                            let op1_0 = op1_t[0].get_variable().unwrap();
-                            let op1_1 = op1_t[1].get_variable().unwrap();
-                            let op1_2 = op1_t[2].get_variable().unwrap();
-                            let op1_3 = op1_t[3].get_variable().unwrap();
-                            let op2_0 = op2_t[0].get_variable().unwrap();
-                            let op2_1 = op2_t[1].get_variable().unwrap();
-                            let op2_2 = op2_t[2].get_variable().unwrap();
-                            let op2_3 = op2_t[3].get_variable().unwrap();
+                            let op1_0 =
+                                PreprocessedConstraintForEval::from_constraint(op1_t[0].clone());
+                            let op1_1 =
+                                PreprocessedConstraintForEval::from_constraint(op1_t[1].clone());
+                            let op1_2 =
+                                PreprocessedConstraintForEval::from_constraint(op1_t[2].clone());
+                            let op1_3 =
+                                PreprocessedConstraintForEval::from_constraint(op1_t[3].clone());
+                            let op2_0 =
+                                PreprocessedConstraintForEval::from_constraint(op2_t[0].clone());
+                            let op2_1 =
+                                PreprocessedConstraintForEval::from_constraint(op2_t[1].clone());
+                            let op2_2 =
+                                PreprocessedConstraintForEval::from_constraint(op2_t[2].clone());
+                            let op2_3 =
+                                PreprocessedConstraintForEval::from_constraint(op2_t[3].clone());
+
                             let mul_high_t_high = mul_high_t[1].get_variable().unwrap();
 
                             let value_fn = move |placer: &mut CS::WitnessPlacer| {
                                 use crate::cs::witness_placer::*;
 
-                                let op1_0 = placer.get_u8(op1_0).widen().widen();
-                                let op1_1 = placer.get_u8(op1_1).widen().widen();
-                                let op1_2 = placer.get_u8(op1_2).widen().widen();
-                                let op1_3 = placer.get_u8(op1_3).widen().widen();
-                                let op2_0 = placer.get_u8(op2_0).widen().widen();
-                                let op2_1 = placer.get_u8(op2_1).widen().widen();
-                                let op2_2 = placer.get_u8(op2_2).widen().widen();
-                                let op2_3 = placer.get_u8(op2_3).widen().widen();
+                                let op1_0 = op1_0.evaluate_with_placer(placer).as_integer();
+                                let op1_1 = op1_1.evaluate_with_placer(placer).as_integer();
+                                let op1_2 = op1_2.evaluate_with_placer(placer).as_integer();
+                                let op1_3 = op1_3.evaluate_with_placer(placer).as_integer();
+                                let op2_0 = op2_0.evaluate_with_placer(placer).as_integer();
+                                let op2_1 = op2_1.evaluate_with_placer(placer).as_integer();
+                                let op2_2 = op2_2.evaluate_with_placer(placer).as_integer();
+                                let op2_3 = op2_3.evaluate_with_placer(placer).as_integer();
 
                                 let byte_sign_ext =
                                     <CS::WitnessPlacer as WitnessTypeSet<F>>::U32::constant(0xff);
@@ -1710,21 +1742,21 @@ impl<F: PrimeField, CS: Circuit<F>> OptimizationContext<F, CS> {
                         cnstr +=
                             Term::from((F::from_u64_unchecked(1u64 << carry[3].1), carry[3].0));
 
-                        cnstr = cnstr + op1_t[0] * op2_t[6];
-                        cnstr = cnstr + op1_t[0] * op2_t[7] * byte_shift_t;
-                        cnstr = cnstr + op1_t[1] * op2_t[5];
-                        cnstr = cnstr + op1_t[1] * op2_t[6] * byte_shift_t;
-                        cnstr = cnstr + op1_t[2] * op2_t[4];
-                        cnstr = cnstr + op1_t[2] * op2_t[5] * byte_shift_t;
-                        cnstr = cnstr + op1_t[3] * op2_t[3];
-                        cnstr = cnstr + op1_t[3] * op2_t[4] * byte_shift_t;
-                        cnstr = cnstr + op1_t[4] * op2_t[2];
-                        cnstr = cnstr + op1_t[4] * op2_t[3] * byte_shift_t;
-                        cnstr = cnstr + op1_t[5] * op2_t[1];
-                        cnstr = cnstr + op1_t[5] * op2_t[2] * byte_shift_t;
-                        cnstr = cnstr + op1_t[6] * op2_t[0];
-                        cnstr = cnstr + op1_t[6] * op2_t[1] * byte_shift_t;
-                        cnstr = cnstr + op1_t[7] * op2_t[0] * byte_shift_t;
+                        cnstr = cnstr + op1_t[0].clone() * op2_t[6].clone();
+                        cnstr = cnstr + op1_t[0].clone() * op2_t[7].clone() * byte_shift_t;
+                        cnstr = cnstr + op1_t[1].clone() * op2_t[5].clone();
+                        cnstr = cnstr + op1_t[1].clone() * op2_t[6].clone() * byte_shift_t;
+                        cnstr = cnstr + op1_t[2].clone() * op2_t[4].clone();
+                        cnstr = cnstr + op1_t[2].clone() * op2_t[5].clone() * byte_shift_t;
+                        cnstr = cnstr + op1_t[3].clone() * op2_t[3].clone();
+                        cnstr = cnstr + op1_t[3].clone() * op2_t[4].clone() * byte_shift_t;
+                        cnstr = cnstr + op1_t[4].clone() * op2_t[2].clone();
+                        cnstr = cnstr + op1_t[4].clone() * op2_t[3].clone() * byte_shift_t;
+                        cnstr = cnstr + op1_t[5].clone() * op2_t[1].clone();
+                        cnstr = cnstr + op1_t[5].clone() * op2_t[2].clone() * byte_shift_t;
+                        cnstr = cnstr + op1_t[6].clone() * op2_t[0].clone();
+                        cnstr = cnstr + op1_t[6].clone() * op2_t[1].clone() * byte_shift_t;
+                        cnstr = cnstr + op1_t[7].clone() * op2_t[0].clone() * byte_shift_t;
                         cnstr += sign_term;
                         cnstr -= mul_high_t[1];
 
@@ -1763,27 +1795,33 @@ impl<F: PrimeField, CS: Circuit<F>> OptimizationContext<F, CS> {
                             let byte_var = byte;
                             let bit_0_var = bit_0.get_variable().unwrap();
 
-                            let op1_0 = op1_t[0].get_variable().unwrap();
-                            let op1_1 = op1_t[1].get_variable().unwrap();
-                            let op1_2 = op1_t[2].get_variable().unwrap();
-                            let op1_3 = op1_t[3].get_variable().unwrap();
-                            let op2_0 = op2_t[0].get_variable().unwrap();
-                            let op2_1 = op2_t[1].get_variable().unwrap();
-                            let op2_2 = op2_t[2].get_variable().unwrap();
-                            let op2_3 = op2_t[3].get_variable().unwrap();
+                            // let _op1_0 = PreprocessedConstraintForEval::from_constraint(op1_t[0].clone());
+                            let op1_1 =
+                                PreprocessedConstraintForEval::from_constraint(op1_t[1].clone());
+                            let op1_2 =
+                                PreprocessedConstraintForEval::from_constraint(op1_t[2].clone());
+                            let op1_3 =
+                                PreprocessedConstraintForEval::from_constraint(op1_t[3].clone());
+                            // let _op2_0 = PreprocessedConstraintForEval::from_constraint(op2_t[0].clone());
+                            let op2_1 =
+                                PreprocessedConstraintForEval::from_constraint(op2_t[1].clone());
+                            let op2_2 =
+                                PreprocessedConstraintForEval::from_constraint(op2_t[2].clone());
+                            let op2_3 =
+                                PreprocessedConstraintForEval::from_constraint(op2_t[3].clone());
                             let mul_high_t_low = mul_high_t[0].get_variable().unwrap();
 
                             let value_fn = move |placer: &mut CS::WitnessPlacer| {
                                 use crate::cs::witness_placer::*;
 
-                                let _op1_0 = placer.get_u8(op1_0).widen().widen();
-                                let op1_1 = placer.get_u8(op1_1).widen().widen();
-                                let op1_2 = placer.get_u8(op1_2).widen().widen();
-                                let op1_3 = placer.get_u8(op1_3).widen().widen();
-                                let _op2_0 = placer.get_u8(op2_0).widen().widen();
-                                let op2_1 = placer.get_u8(op2_1).widen().widen();
-                                let op2_2 = placer.get_u8(op2_2).widen().widen();
-                                let op2_3 = placer.get_u8(op2_3).widen().widen();
+                                // let _op1_0 = op1_0.evaluate_with_placer(placer).as_integer();
+                                let op1_1 = op1_1.evaluate_with_placer(placer).as_integer();
+                                let op1_2 = op1_2.evaluate_with_placer(placer).as_integer();
+                                let op1_3 = op1_3.evaluate_with_placer(placer).as_integer();
+                                // let _op2_0 = op2_0.evaluate_with_placer(placer).as_integer();
+                                let op2_1 = op2_1.evaluate_with_placer(placer).as_integer();
+                                let op2_2 = op2_2.evaluate_with_placer(placer).as_integer();
+                                let op2_3 = op2_3.evaluate_with_placer(placer).as_integer();
 
                                 let multiplicative_dest = placer.get_u16(mul_high_t_low).widen();
 
@@ -1836,11 +1874,11 @@ impl<F: PrimeField, CS: Circuit<F>> OptimizationContext<F, CS> {
                         cnstr +=
                             Term::from((F::from_u64_unchecked(1u64 << carry[2].1), carry[2].0));
 
-                        cnstr = cnstr + op1_t[1] * op2_t[3];
-                        cnstr = cnstr + op1_t[2] * op2_t[2];
-                        cnstr = cnstr + op1_t[2] * op2_t[3] * byte_shift_t;
-                        cnstr = cnstr + op1_t[3] * op2_t[1];
-                        cnstr = cnstr + op1_t[3] * op2_t[2] * byte_shift_t;
+                        cnstr = cnstr + op1_t[1].clone() * op2_t[3].clone();
+                        cnstr = cnstr + op1_t[2].clone() * op2_t[2].clone();
+                        cnstr = cnstr + op1_t[2].clone() * op2_t[3].clone() * byte_shift_t;
+                        cnstr = cnstr + op1_t[3].clone() * op2_t[1].clone();
+                        cnstr = cnstr + op1_t[3].clone() * op2_t[2].clone() * byte_shift_t;
                         cnstr -= mul_high_t[0];
 
                         cnstr -= Term::from((F::from_u64_unchecked(1 << 16), byte));
@@ -1863,7 +1901,7 @@ impl<F: PrimeField, CS: Circuit<F>> OptimizationContext<F, CS> {
                         cnstr +=
                             Term::from((F::from_u64_unchecked(1u64 << carry[1].1), carry[1].0));
 
-                        cnstr = cnstr + op1_t[3] * op2_t[3];
+                        cnstr = cnstr + op1_t[3].clone() * op2_t[3].clone();
                         cnstr -= mul_high_t[1];
 
                         cs.add_constraint(cnstr);

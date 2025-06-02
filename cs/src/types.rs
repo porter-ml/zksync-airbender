@@ -1155,6 +1155,58 @@ impl<F: PrimeField> RegisterDecomposition<F> {
             u8_decomposition: chunks,
         }
     }
+
+    pub fn make_u8_chunks<CS: Circuit<F>>(
+        cs: &mut CS,
+        reg: Register<F>,
+    ) -> [(Variable, Constraint<F>); 2] {
+        let byte0 = cs.add_variable();
+        let byte2 = cs.add_variable();
+
+        let register_limbs = [reg.0[0].get_variable(), reg.0[1].get_variable()];
+        //setting values for overflow flags
+        let value_fn = move |placer: &mut CS::WitnessPlacer| {
+            let low_limb = placer.get_u16(register_limbs[0]);
+            let high_limb = placer.get_u16(register_limbs[1]);
+
+            let byte0_val = low_limb.truncate();
+            let byte2_val = high_limb.truncate();
+
+            placer.assign_u8(byte0, &byte0_val);
+            placer.assign_u8(byte2, &byte2_val);
+        };
+
+        cs.set_values(value_fn);
+
+        // and make linear constraints that describe the remaining bytes
+        let mut byte1 = Term::from(reg.0[0]) - Term::from(byte0);
+        byte1.scale(F::from_u64_unchecked(1 << 8).inverse().unwrap());
+
+        let mut byte3 = Term::from(reg.0[1]) - Term::from(byte2);
+        byte3.scale(F::from_u64_unchecked(1 << 8).inverse().unwrap());
+
+        cs.enforce_lookup_tuple_for_fixed_table(
+            &[
+                LookupInput::Variable(byte0),
+                LookupInput::from(byte1.clone()),
+                LookupInput::empty(),
+            ],
+            TableType::RangeCheckSmall,
+            false,
+        );
+
+        cs.enforce_lookup_tuple_for_fixed_table(
+            &[
+                LookupInput::Variable(byte2),
+                LookupInput::from(byte3.clone()),
+                LookupInput::empty(),
+            ],
+            TableType::RangeCheckSmall,
+            false,
+        );
+
+        [(byte0, byte1), (byte2, byte3)]
+    }
 }
 
 // To be used only for operands coming from decoder
