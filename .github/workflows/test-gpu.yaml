@@ -48,7 +48,7 @@ jobs:
         run: |
           mkdir artifacts
           CUDAARCHS=80 CARGO_TARGET_DIR=./build \
-          cargo test -p ${{ matrix.package }} --no-run --release --message-format=json -q \
+          cargo +$RUST_TOOLCHAIN test -p ${{ matrix.package }} --no-run --release --message-format=json -q \
           | jq -r 'select(.executable != null) | .executable' \
           | while read binary; do
             cp "$binary" artifacts/${{ matrix.package }}
