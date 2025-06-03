@@ -65,10 +65,9 @@ jobs:
     runs-on: [ matterlabs-ci-gpu-runner ]
     strategy:
       matrix:
-        cuda: [ "12.6.0-devel-ubuntu24.04" ]
         package: [ "zksmith" ]
     container:
-      image: nvidia/cuda:${{ matrix.cuda }}
+      image: nvidia/cuda:12.6.0-runtime-ubuntu24.04
 
     needs: zksync-airbender-build
     steps:
