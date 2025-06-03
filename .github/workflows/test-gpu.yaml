@@ -48,6 +48,7 @@ jobs:
         run: |
           mkdir artifacts
           CUDAARCHS=80 CARGO_TARGET_DIR=./build \
+          RUSTFLAGS='-C target-feature=+crt-static' \
           cargo +$RUST_TOOLCHAIN test -p ${{ matrix.package }} --no-run --release --message-format=json -q \
           | jq -r 'select(.executable != null) | .executable' \
           | while read binary; do
@@ -66,8 +67,8 @@ jobs:
     strategy:
       matrix:
         package: [ "zksmith" ]
-    container:
-      image: nvidia/cuda:12.6.0-runtime-ubuntu24.04
+    #container:
+    #  image: nvidia/cuda:12.6.0-runtime-ubuntu24.04
 
     needs: zksync-airbender-build
     steps:
