@@ -38,6 +38,12 @@ jobs:
           echo "${HOME}/.cargo/bin" >> "${GITHUB_PATH}"
           echo "export PATH=\"$HOME/.cargo/bin:\$PATH\"" >> "${HOME}/.bash_profile"
 
+      - name: Setup CMake
+        run: |
+          curl -LO https://github.com/Kitware/CMake/releases/download/v3.24.3/cmake-3.24.3-linux-x86_64.sh && \
+            chmod +x cmake-3.24.3-linux-x86_64.sh && \
+            ./cmake-3.24.3-linux-x86_64.sh --skip-license --prefix=/usr/local
+
       - name: Check CUDA version
         run: |
           nvcc --version
