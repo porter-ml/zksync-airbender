@@ -79,6 +79,7 @@ impl LocalProver {
     fn new_internal(padded_binary: Vec<u32>) -> LocalProver {
         let mut gpu_state = GpuSharedState::default();
         gpu_state.preheat_for_universal_verifier(&padded_binary);
+        gpu_state.enable_multigpu();
 
         LocalProver {
             binary: padded_binary,

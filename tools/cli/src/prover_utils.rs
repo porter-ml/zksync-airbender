@@ -220,6 +220,31 @@ pub fn program_proof_from_proof_list_and_metadata(
         recursion_chain_hash: proof_metadata.prev_end_params_output_hash,
     }
 }
+pub fn proof_list_and_metadata_from_program_proof(
+    input: ProgramProof,
+) -> (ProofMetadata, ProofList) {
+    let reduced_proof_count = input.base_layer_proofs.len();
+    let proof_list = ProofList {
+        basic_proofs: vec![],
+        // Here we're guessing - as ProgramProof doesn't distinguish between basic and reduced proofs.
+        reduced_proofs: input.base_layer_proofs,
+        final_proofs: vec![],
+        delegation_proofs: input.delegation_proofs.into_iter().collect(),
+    };
+
+    let proof_metadata = ProofMetadata {
+        basic_proof_count: 0,
+        reduced_proof_count,
+        final_proof_count: 0,
+        delegation_proof_count: vec![],
+        register_values: input.register_final_values,
+        end_params: input.end_params,
+        prev_end_params_output_hash: input.recursion_chain_hash,
+        prev_end_params_output: input.recursion_chain_preimage,
+    };
+    (proof_metadata, proof_list)
+}
+
 pub fn create_proofs(
     bin_path: &String,
     output_dir: &String,
@@ -336,6 +361,8 @@ fn should_stop_recursion(proof_metadata: &ProofMetadata) -> bool {
 pub struct GpuSharedState {
     #[cfg(feature = "gpu")]
     pub cache: SetupCache<Global, prover_examples::gpu::ConcurrentStaticHostAllocator>,
+    #[cfg(feature = "gpu")]
+    pub gpu_threads: Option<Vec<prover_examples::multigpu::GpuThread>>,
 }
 
 #[cfg(feature = "gpu")]
@@ -349,6 +376,16 @@ impl GpuSharedState {
             .get_or_create_reduced_circuit(&get_padded_binary(UNIVERSAL_CIRCUIT_VERIFIER));
         self.cache.get_or_create_delegations();
         println!("Creating setup took {:?}", now.elapsed());
+    }
+
+    pub fn enable_multigpu(&mut self) {
+        use prover_examples::multigpu::GpuThread;
+        if self.gpu_threads.is_some() {
+            panic!("GPU threads already initialized.");
+        }
+        let mut gpu_threads = GpuThread::init_multigpu().expect("Failed to initialize GPU threads");
+        GpuThread::start_multigpu(&mut gpu_threads);
+        self.gpu_threads = Some(gpu_threads);
     }
 }
 
@@ -387,17 +424,34 @@ pub fn create_proofs_internal(
                     let delegation_precomputations =
                         gpu_shared_state.cache.get_or_create_delegations();
 
-                    let context = prover_examples::gpu::create_default_prover_context();
-                    prover_examples::gpu::gpu_prove_image_execution_for_machine_with_gpu_tracers(
-                        num_instances,
-                        &binary,
-                        non_determinism_source,
-                        &main_circuit_precomputations,
-                        &delegation_precomputations,
-                        &context,
-                        &worker,
-                    )
-                    .unwrap()
+                    if let Some(gpu_threads) = &gpu_shared_state.gpu_threads {
+                        // MultiGPU case
+                        prover_examples::multigpu::multigpu_prove_image_execution_for_machine_with_gpu_tracers(
+                            num_instances,
+                            &binary,
+                            non_determinism_source,
+                            main_circuit_precomputations.0,
+                            main_circuit_precomputations.1,
+                            delegation_precomputations.0,
+                            delegation_precomputations.1,
+                            &gpu_threads,
+                            &worker,
+                        )
+                        .unwrap()
+                    } else {
+                        // Single GPU with a local context (slower)
+                        let context = prover_examples::gpu::create_default_prover_context();
+                        prover_examples::gpu::gpu_prove_image_execution_for_machine_with_gpu_tracers(
+                            num_instances,
+                            &binary,
+                            non_determinism_source,
+                            &main_circuit_precomputations.0,
+                            &delegation_precomputations.0,
+                            &context,
+                            &worker,
+                        )
+                        .unwrap()
+                    }
                 }
                 #[cfg(not(feature = "gpu"))]
                 {
@@ -442,23 +496,38 @@ pub fn create_proofs_internal(
                         .cache
                         .get_or_create_reduced_circuit(&binary)
                         .clone();
-                    //setups::get_reduced_riscv_circuit_setup(&binary, &worker);
                     let delegation_precomputations =
                         gpu_shared_state.cache.get_or_create_delegations();
 
-                    //                        setups::all_delegation_circuits_precomputations(&worker);
+                    if let Some(gpu_threads) = &gpu_shared_state.gpu_threads {
+                        // MultiGPU case
+                        prover_examples::multigpu::multigpu_prove_image_execution_for_machine_with_gpu_tracers(
+                            num_instances,
+                            &binary,
+                            non_determinism_source,
+                            main_circuit_precomputations.0,
 
-                    let context = prover_examples::gpu::create_default_prover_context();
-                    prover_examples::gpu::gpu_prove_image_execution_for_machine_with_gpu_tracers(
-                        num_instances,
-                        &binary,
-                        non_determinism_source,
-                        &main_circuit_precomputations,
-                        &delegation_precomputations,
-                        &context,
-                        &worker,
-                    )
-                    .unwrap()
+                            main_circuit_precomputations.1,
+                            delegation_precomputations.0,
+                            delegation_precomputations.1,
+                            &gpu_threads,
+                            &worker,
+                        )
+                        .unwrap()
+                    } else {
+                        // Single GPU with a local context (slower)
+                        let context = prover_examples::gpu::create_default_prover_context();
+                        prover_examples::gpu::gpu_prove_image_execution_for_machine_with_gpu_tracers(
+                            num_instances,
+                            &binary,
+                            non_determinism_source,
+                            &main_circuit_precomputations.0,
+                            &delegation_precomputations.0,
+                            &context,
+                            &worker,
+                        )
+                        .unwrap()
+                    }
                 }
                 #[cfg(not(feature = "gpu"))]
                 {
@@ -617,30 +686,7 @@ pub fn create_recursion_proofs(
 }
 
 pub fn create_final_proofs_from_program_proof(input: ProgramProof) -> ProgramProof {
-    let reduced_proof_count = input.base_layer_proofs.len();
-    let proof_list = ProofList {
-        basic_proofs: vec![],
-        // Here we're guessing - as ProgramProof doesn't distinguish between basic and reduced proofs.
-        reduced_proofs: input.base_layer_proofs,
-        final_proofs: vec![],
-        delegation_proofs: input.delegation_proofs.into_iter().collect(),
-    };
-
-    let proof_metadata = ProofMetadata {
-        basic_proof_count: 0,
-        reduced_proof_count,
-        final_proof_count: 0,
-        delegation_proof_count: vec![],
-        register_values: input.register_final_values,
-        end_params: input.end_params,
-        prev_end_params_output_hash: input.recursion_chain_hash,
-        prev_end_params_output: input.recursion_chain_preimage,
-    };
-
-    println!(
-        "input recursion chain preimage: {:?}",
-        input.recursion_chain_preimage
-    );
+    let (proof_metadata, proof_list) = proof_list_and_metadata_from_program_proof(input);
 
     create_final_proofs(proof_list, proof_metadata, &None)
 }
