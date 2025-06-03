@@ -16,7 +16,7 @@ jobs:
     runs-on: [ ubuntu-latest ]
     strategy:
       matrix:
-        cuda: [ "12.6.0-devel-ubuntu24.04" ]
+        cuda: [ "12.5.0-devel-ubuntu24.04" ]
         package: [ "zksmith" ]
     container:
       image: nvidia/cuda:${{ matrix.cuda }}
@@ -67,7 +67,7 @@ jobs:
       matrix:
         package: [ "zksmith" ]
     container:
-      image: nvidia/cuda:12.6.0-runtime-ubuntu24.04
+      image: nvidia/cuda:12.5.0-runtime-ubuntu24.04
 
     needs: zksync-airbender-build
     steps:
@@ -81,14 +81,14 @@ jobs:
       #  run: |
       #    nvidia-smi
 
-      - name: Download test binary built with CUDA 12.6
+      - name: Download test binary built with CUDA 12.5
         uses: actions/download-artifact@v4
         with:
-          name: zksync-airbender-12.6.0-devel-ubuntu24.04-${{ matrix.package }}-test-binary
-          path: zksync-airbender-test-binary/12.6/
+          name: zksync-airbender-12.5.0-devel-ubuntu24.04-${{ matrix.package }}-test-binary
+          path: zksync-airbender-test-binary/12.5/
 
-      - name: Run test binary built with CUDA 12.6
+      - name: Run test binary built with CUDA 12.5
         id: test_cuda_12_6
         run: |
-          chmod +x zksync-airbender-test-binary/12.6/${{ matrix.package }}
-          zksync-airbender-test-binary/12.6/${{ matrix.package }} --nocapture
+          chmod +x zksync-airbender-test-binary/12.5/${{ matrix.package }}
+          zksync-airbender-test-binary/12.5/${{ matrix.package }} --nocapture
