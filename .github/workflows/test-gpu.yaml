@@ -16,7 +16,7 @@ jobs:
     runs-on: [ ubuntu-latest ]
     strategy:
       matrix:
-        cuda: [ "12.5.0-devel-ubuntu24.04" ]
+        cuda: [ "12.5.0-devel-ubuntu22.04" ]
         package: [ "zksmith" ]
     container:
       image: nvidia/cuda:${{ matrix.cuda }}
@@ -67,7 +67,7 @@ jobs:
       matrix:
         package: [ "zksmith" ]
     container:
-      image: nvidia/cuda:12.5.0-runtime-ubuntu24.04
+      image: nvidia/cuda:12.5.0-runtime-ubuntu22.04
 
     needs: zksync-airbender-build
     steps:
@@ -84,7 +84,7 @@ jobs:
       - name: Download test binary built with CUDA 12.5
         uses: actions/download-artifact@v4
         with:
-          name: zksync-airbender-12.5.0-devel-ubuntu24.04-${{ matrix.package }}-test-binary
+          name: zksync-airbender-12.5.0-devel-ubuntu22.04-${{ matrix.package }}-test-binary
           path: zksync-airbender-test-binary/12.5/
 
       - name: Run test binary built with CUDA 12.5
