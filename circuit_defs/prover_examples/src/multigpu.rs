@@ -305,6 +305,9 @@ impl GpuThread {
                                 CircuitType::Main(MainCircuitType::FinalReducedRiscVMachine) => {
                                     panic!("Not supported")
                                 }
+                                CircuitType::Main(MainCircuitType::MachineWithoutSignedMulDiv) => {
+                                    panic!("Not supported")
+                                }
                                 CircuitType::Delegation(delegation_circuit_type) => {
                                     delegation_setup.insert(delegation_circuit_type, new_setup);
                                 }
