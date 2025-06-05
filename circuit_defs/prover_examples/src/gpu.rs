@@ -50,7 +50,7 @@ use crate::{NUM_QUERIES, POW_BITS};
 pub fn initialize_host_allocator_if_needed() {
     if !MemPoolProverContext::is_host_allocator_initialized() {
         // allocate 8 x 1 GB ((1 << 8) << 22) of pinned host memory with 4 MB (1 << 22) chunking
-        MemPoolProverContext::initialize_host_allocator(8, 1 << 8, 22).unwrap();
+        MemPoolProverContext::initialize_host_allocator(12, 1 << 8, 22).unwrap();
     }
 }
 
