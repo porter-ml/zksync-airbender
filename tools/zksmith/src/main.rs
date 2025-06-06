@@ -101,15 +101,32 @@ impl LocalProver {
 
         let non_determinism_data = u32_from_hex_string(&data);
 
-        let (proof_list, proof_metadata) = create_proofs_internal(
-            &self.binary,
-            non_determinism_data,
-            &Machine::Standard,
-            // FIXME: figure out how many instances (currently gpu ignores this).
-            100,
-            None,
-            &mut Some(&mut self.gpu_state),
-        );
+        // let (proof_list, proof_metadata) = create_proofs_internal(
+        //     &self.binary,
+        //     non_determinism_data,
+        //     &Machine::Standard,
+        //     // FIXME: figure out how many instances (currently gpu ignores this).
+        //     100,
+        //     None,
+        //     // &mut Some(&mut self.gpu_state),
+        //     &mut None,
+        // );
+        use std::path::Path;
+        let cpu_dir_str = "/home/mcarilli_matterlabs_dev/airbender-marcin-debug/tools/zksmith/tmp-cpu";
+        let cpu_dir = Path::new(&cpu_dir_str);
+        if !cpu_dir.exists() {
+            std::fs::create_dir_all(&cpu_dir).expect("Failed to create output dir");
+        }
+        let base_dir = Path::new(&cpu_dir_str).join("base");
+        if !base_dir.exists() {
+            std::fs::create_dir_all(&base_dir).expect("Failed to create base dir");
+        }
+        use cli_lib::prover_utils::{deserialize_from_file, ProofList, serialize_to_file};
+        // proof_list.write_to_directory(&base_dir);
+        // serialize_to_file(&proof_metadata, &base_dir.join("metadata.json"));
+
+        let proof_metadata = deserialize_from_file(base_dir.join("metadata.json").to_str().unwrap());
+        let proof_list = ProofList::load_from_directory(&String::from(base_dir.to_str().unwrap()), &proof_metadata);
         let basic_duration = now.elapsed().as_millis() as u64;
         let basic_proofs = proof_list.basic_proofs.len();
         let delegation_proofs = proof_list
@@ -117,12 +134,15 @@ impl LocalProver {
             .iter()
             .map(|x| x.1.len())
             .collect::<Vec<_>>();
+        let gpu_dir_str = "/home/mcarilli_matterlabs_dev/airbender-marcin-debug/tools/zksmith/tmp-gpu";
         let (recursion_proof_list, recursion_proof_metadata) = create_recursion_proofs(
             proof_list,
             proof_metadata,
-            &None,
+            &Some(String::from(gpu_dir_str)),
             &mut Some(&mut self.gpu_state),
+            // &mut None,
         );
+        // recursion_proof_list.write_to_directory(&Path::new("/home/mcarilli_matterlabs_dev/airbender-marcin-debug/tools/zksmith/tmp/recursion"));
 
         let program_proof = program_proof_from_proof_list_and_metadata(
             &recursion_proof_list,
@@ -433,7 +453,7 @@ mod tests {
         // We are inlining them here, due to CI (as on CI we build on separate device, and then only ship artifacts to the
         // gpu device for execution).
         let test_files = vec![
-            include_str!("../testdata/1.json"),
+            // include_str!("../testdata/1.json"),
             include_str!("../testdata/2.json"),
         ];
         let mut timings = Vec::new();

@@ -1,0 +1,179 @@
+{
+  "basic_proof_count": 0,
+  "reduced_proof_count": 3,
+  "final_proof_count": 0,
+  "delegation_proof_count": [
+    [
+      1991,
+      1
+    ]
+  ],
+  "register_values": [
+    {
+      "value": 0,
+      "last_access_timestamp": 50331646
+    },
+    {
+      "value": 1764,
+      "last_access_timestamp": 40756161
+    },
+    {
+      "value": 69197440,
+      "last_access_timestamp": 40756204
+    },
+    {
+      "value": 69208064,
+      "last_access_timestamp": 40699085
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 40756141
+    },
+    {
+      "value": 69197500,
+      "last_access_timestamp": 40756068
+    },
+    {
+      "value": 3144134277,
+      "last_access_timestamp": 40755921
+    },
+    {
+      "value": 1013904242,
+      "last_access_timestamp": 40755925
+    },
+    {
+      "value": 69197488,
+      "last_access_timestamp": 40756216
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 40756086
+    },
+    {
+      "value": 238828317,
+      "last_access_timestamp": 40756222
+    },
+    {
+      "value": 65535,
+      "last_access_timestamp": 40756226
+    },
+    {
+      "value": 3891143671,
+      "last_access_timestamp": 40756230
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 40756234
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 40756238
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 40756242
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 40756246
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 40756250
+    },
+    {
+      "value": 1761966229,
+      "last_access_timestamp": 40756254
+    },
+    {
+      "value": 1905501434,
+      "last_access_timestamp": 40756258
+    },
+    {
+      "value": 3891007049,
+      "last_access_timestamp": 40756262
+    },
+    {
+      "value": 4158951669,
+      "last_access_timestamp": 40756266
+    },
+    {
+      "value": 122146028,
+      "last_access_timestamp": 40756270
+    },
+    {
+      "value": 3541717452,
+      "last_access_timestamp": 40756274
+    },
+    {
+      "value": 2821960002,
+      "last_access_timestamp": 40756278
+    },
+    {
+      "value": 1479930313,
+      "last_access_timestamp": 40756282
+    },
+    {
+      "value": 69197500,
+      "last_access_timestamp": 40756280
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 40756126
+    },
+    {
+      "value": 2773480762,
+      "last_access_timestamp": 40755929
+    },
+    {
+      "value": 2600822924,
+      "last_access_timestamp": 40755937
+    },
+    {
+      "value": 1541459225,
+      "last_access_timestamp": 40755945
+    },
+    {
+      "value": 2600824832,
+      "last_access_timestamp": 40755824
+    }
+  ],
+  "end_params": [
+    2629456387,
+    3464343569,
+    816839736,
+    760648855,
+    3632775350,
+    3756755668,
+    4246194002,
+    359161214
+  ],
+  "prev_end_params_output_hash": [
+    1761966229,
+    1905501434,
+    3891007049,
+    4158951669,
+    122146028,
+    3541717452,
+    2821960002,
+    1479930313
+  ],
+  "prev_end_params_output": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    2991178837,
+    3909013692,
+    516843377,
+    1310202663,
+    355252612,
+    3427056452,
+    3275608937,
+    1438701535
+  ]
+}

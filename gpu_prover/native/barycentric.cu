@@ -18,6 +18,19 @@ using e4 = ext4_field;
 // Trace poly evals are read as bf "compressed" values on this domain.
 // Split-quotient evals are e4.
 
+EXTERN __global__ void ensure_e4_canonical_kernel(e4 *evals, const unsigned n) {
+  const auto gid = unsigned(blockIdx.x * blockDim.x + threadIdx.x);
+  if (gid >= n)
+    return;
+
+  e4 out = evals[gid];
+  out[0][0] = bf::into_canonical(out[0][0]);
+  out[0][1] = bf::into_canonical(out[0][1]);
+  out[1][0] = bf::into_canonical(out[1][0]);
+  out[1][1] = bf::into_canonical(out[1][1]);
+  evals[gid] = out;
+}
+
 // Helper functions to compute common_factor for precompute_lagrange_coeffs
 EXTERN __global__ void barycentric_precompute_common_factor_kernel(const e4 *z_ref, e4 *common_factor_ref, const e2 coset, const e2 decompression_factor,
                                                                    const unsigned count) {

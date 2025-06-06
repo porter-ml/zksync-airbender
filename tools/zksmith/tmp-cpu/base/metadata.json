@@ -1,0 +1,153 @@
+{
+  "basic_proof_count": 4,
+  "reduced_proof_count": 0,
+  "final_proof_count": 0,
+  "delegation_proof_count": [
+    [
+      1991,
+      1
+    ]
+  ],
+  "register_values": [
+    {
+      "value": 0,
+      "last_access_timestamp": 67108862
+    },
+    {
+      "value": 1192,
+      "last_access_timestamp": 62259737
+    },
+    {
+      "value": 68943744,
+      "last_access_timestamp": 62259780
+    },
+    {
+      "value": 69208064,
+      "last_access_timestamp": 62259053
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259729
+    },
+    {
+      "value": 3766231040,
+      "last_access_timestamp": 2621712
+    },
+    {
+      "value": 1352,
+      "last_access_timestamp": 62259448
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259469
+    },
+    {
+      "value": 68943792,
+      "last_access_timestamp": 62259792
+    },
+    {
+      "value": 1359893119,
+      "last_access_timestamp": 62259078
+    },
+    {
+      "value": 238828317,
+      "last_access_timestamp": 62259798
+    },
+    {
+      "value": 65535,
+      "last_access_timestamp": 62259802
+    },
+    {
+      "value": 3891143671,
+      "last_access_timestamp": 62259806
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259810
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259814
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259818
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259822
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259826
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259830
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259834
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259838
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259842
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259846
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259850
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259854
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259858
+    },
+    {
+      "value": 68943800,
+      "last_access_timestamp": 62259856
+    },
+    {
+      "value": 1013904242,
+      "last_access_timestamp": 62258125
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62258837
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 2621624
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 2621645
+    },
+    {
+      "value": 0,
+      "last_access_timestamp": 62259485
+    }
+  ],
+  "end_params": [
+    2991178837,
+    3909013692,
+    516843377,
+    1310202663,
+    355252612,
+    3427056452,
+    3275608937,
+    1438701535
+  ],
+  "prev_end_params_output_hash": null,
+  "prev_end_params_output": null
+}

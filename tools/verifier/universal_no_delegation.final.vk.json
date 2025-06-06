@@ -1,15 +1,15 @@
 {
   "machine_type": "ReducedFinal",
-  "bytecode_hash_hex": "a661c2582f7311a066fed6aa5d8d8e53d1ef6ed5c74fd501fccd3a05c99d7c55",
+  "bytecode_hash_hex": "d6decbd155d73619e0a5d2585033808145618313d5f97d60ae0bfbe9adc90689",
   "params": [
-    450952736,
-    266097338,
-    57980520,
-    3983253845,
-    3619491068,
-    640210741,
-    3659638418,
-    635428486
+    2196508986,
+    2845777462,
+    2685386908,
+    2143129532,
+    3106059358,
+    1400349951,
+    1128127536,
+    4111009453
   ],
-  "params_hex": "1ae0fe200fdc52ba0374b668ed6ba155d7bd0cfc2628d735da21a69225dfde86"
+  "params_hex": "82ec113aa99f1e36a00fc09c7fbd8fbcb922b45e5377a4ff433ddc30f50906ad"
 }

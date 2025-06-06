@@ -28,6 +28,15 @@ type E2 = Ext2Field;
 type E4 = Ext4Field;
 
 cuda_kernel!(
+    EnsureE4Canonical,
+    ensure_e4_canonical,
+    evals: *mut E4,
+    n: u32,
+);
+
+ensure_e4_canonical!(ensure_e4_canonical_kernel);
+
+cuda_kernel!(
     PrecomputeCommonFactor,
     precompute_common_factor,
     z: *const E4,
@@ -320,7 +329,14 @@ pub fn batch_barycentric_eval(
         &temp_storage_partial_reduce,
         evals.slice_mut(),
         stream,
-    )
+    )?;
+    let n_evals = evals.slice().len() as u32;
+    let block_dim = WARP_SIZE * 4;
+    let grid_dim = n_evals.get_chunks_count(block_dim);
+    let config = CudaLaunchConfig::basic(grid_dim, block_dim, stream);
+    let evals = evals.as_mut_ptr();
+    let args = EnsureE4CanonicalArguments::new(evals, n_evals);
+    EnsureE4CanonicalFunction(ensure_e4_canonical_kernel).launch(&config, &args)
 }
 
 #[cfg(test)]
