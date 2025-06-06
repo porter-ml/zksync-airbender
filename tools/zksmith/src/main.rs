@@ -147,19 +147,17 @@ impl LocalProver {
             .map(|x| x.1.len())
             .collect::<Vec<_>>();
 
-        let recursion_output_dir_str = if create_cpu_all_layers {
-            cpu_dir_str
+        let (recursion_output_dir_str, mut maybe_gpu_state) = if create_cpu_all_layers {
+            (cpu_dir_str, None)
         } else {
-            gpu_dir_str
+            (gpu_dir_str, Some(&mut self.gpu_state))
         };
         let (recursion_proof_list, recursion_proof_metadata) = create_recursion_proofs(
             proof_list,
             proof_metadata,
             &Some(String::from(recursion_output_dir_str)),
-            &mut Some(&mut self.gpu_state),
-            // &mut None,
+            &mut maybe_gpu_state,
         );
-        // recursion_proof_list.write_to_directory(&Path::new("/home/mcarilli_matterlabs_dev/airbender-marcin-debug/tools/zksmith/tmp/recursion"));
 
         let program_proof = program_proof_from_proof_list_and_metadata(
             &recursion_proof_list,
