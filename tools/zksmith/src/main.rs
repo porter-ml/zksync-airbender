@@ -117,6 +117,7 @@ impl LocalProver {
 
         // If true, creates CPU proofs for all layers (base, recursion_0, recursion_1) in tmp-cpu
         // If false, reads CPU proofs for base layer, and runs GPU starting from recursion_0
+        //   Failure is expected just after "*** Starting recursion level 1 ***"
         let create_cpu_all_layers = false;
 
         let (proof_list, proof_metadata) = if create_cpu_all_layers {
