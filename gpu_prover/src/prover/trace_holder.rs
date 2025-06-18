@@ -267,10 +267,10 @@ pub(crate) fn make_evaluations_sum_to_zero<C: ProverContext>(
     {
         reduce(
             ReduceOperation::Sum,
-            reduce_temp_storage_refs[i & 1],
+            reduce_temp_storage_refs[0],
             &col[..domain_size - 1],
             &mut reduce_result[i],
-            stream_refs[i & 1],
+            stream_refs[0],
         )?;
     }
     end_event.record(aux_stream)?;

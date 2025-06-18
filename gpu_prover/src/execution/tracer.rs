@@ -13,7 +13,7 @@ use prover::tracers::main_cycle_optimized::{
     RegIndexOrMemWordIndex, SingleCycleTracingData, EMPTY_SINGLE_CYCLE_TRACING_DATA,
 };
 use std::alloc::Global;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 // NOTE: this tracer ALLOWS for delegations to initialize memory, so we should use enough cycles
 // to eventually perform all the inits
 
@@ -185,7 +185,7 @@ impl<A: GoodAllocator> CycleTracingData<A> {
 
 #[derive(Default)]
 pub struct DelegationTracingData<A: GoodAllocator = Global> {
-    pub witnesses: HashMap<u16, DelegationWitness<A>>,
+    pub witnesses: BTreeMap<u16, DelegationWitness<A>>,
 }
 
 // type SwapDelegationWitnessFn<A> = Box<dyn for<'b> Fn(u16, &'b mut DelegationWitness<A>) + 'a>;

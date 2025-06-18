@@ -11,7 +11,7 @@ use fft::GoodAllocator;
 use itertools::Itertools;
 use log::{error, info, trace};
 use std::alloc::Global;
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{BTreeMap, HashSet, VecDeque};
 use std::process::exit;
 use std::thread;
 
@@ -94,18 +94,18 @@ fn gpu_manager<C: ProverContext>(
     assert_eq!(worker_initialized_receiver.iter().count(), device_count);
     trace!("GPU_MANAGER all GPU workers initialized");
     let mut batches_receiver = Some(batches_receiver);
-    let mut batch_receivers = HashMap::new();
-    let mut batch_senders = HashMap::new();
+    let mut batch_receivers = BTreeMap::new();
+    let mut batch_senders = BTreeMap::new();
     let mut work_queue = VecDeque::new();
     let mut batches_to_flush = HashSet::new();
     loop {
         let mut select = Select::new();
         let batches_index = batches_receiver.as_ref().map(|r| select.recv(r));
-        let batch_receiver_indexes: HashMap<_, _> = batch_receivers
+        let batch_receiver_indexes: BTreeMap<_, _> = batch_receivers
             .iter()
             .map(|(&batch_id, r)| (select.recv(r), batch_id))
             .collect();
-        let worker_receivers_indexes: HashMap<_, _> = worker_receivers
+        let worker_receivers_indexes: BTreeMap<_, _> = worker_receivers
             .iter()
             .enumerate()
             .map(|(worker_id, r)| (select.recv(r), worker_id))
@@ -191,7 +191,7 @@ fn gpu_manager<C: ProverContext>(
         };
         while !work_queue.is_empty() {
             let mut select = Select::new_biased();
-            let worker_senders_indexes: HashMap<_, _> = worker_queues
+            let worker_senders_indexes: BTreeMap<_, _> = worker_queues
                 .iter()
                 .enumerate()
                 .sorted_by_key(|(_, q)| *q)

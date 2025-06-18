@@ -35,7 +35,8 @@ use prover::risc_v_simulator::cycle::{
 use prover::tracers::delegation::DelegationWitness;
 use prover::tracers::main_cycle_optimized::SingleCycleTracingData;
 use prover::ShuffleRamSetupAndTeardown;
-use std::collections::HashMap;
+use std::cmp::Ord;
+use std::collections::BTreeMap;
 use std::fmt::Debug;
 use std::hash::Hash;
 use std::ops::Deref;
@@ -71,23 +72,23 @@ struct BinaryHolder {
     precomputations: CircuitPrecomputationsHost<A>,
 }
 
-pub struct ExecutionProver<'a, K: Debug + Eq + Hash> {
+pub struct ExecutionProver<'a, K: Debug + Eq + Hash + Ord> {
     gpu_manager: GpuManager<MemPoolProverContext<'a>>,
     worker: Worker,
     wait_group: Option<WaitGroup>,
-    binaries: HashMap<K, BinaryHolder>,
+    binaries: BTreeMap<K, BinaryHolder>,
     delegation_circuits_precomputations:
-        HashMap<DelegationCircuitType, CircuitPrecomputationsHost<A>>,
+        BTreeMap<DelegationCircuitType, CircuitPrecomputationsHost<A>>,
     free_setup_and_teardowns_sender: Sender<ShuffleRamSetupAndTeardown<A>>,
     free_setup_and_teardowns_receiver: Receiver<ShuffleRamSetupAndTeardown<A>>,
     free_cycle_tracing_data_sender: Sender<CycleTracingData<A>>,
     free_cycle_tracing_data_receiver: Receiver<CycleTracingData<A>>,
-    free_delegation_witness_senders: HashMap<DelegationCircuitType, Sender<DelegationWitness<A>>>,
+    free_delegation_witness_senders: BTreeMap<DelegationCircuitType, Sender<DelegationWitness<A>>>,
     free_delegation_witness_receivers:
-        HashMap<DelegationCircuitType, Receiver<DelegationWitness<A>>>,
+        BTreeMap<DelegationCircuitType, Receiver<DelegationWitness<A>>>,
 }
 
-impl<K: Clone + Debug + Eq + Hash> ExecutionProver<'_, K> {
+impl<K: Clone + Debug + Eq + Hash + Ord> ExecutionProver<'_, K> {
     ///  Creates a new instance of `ExecutionProver`.
     ///
     /// # Arguments
@@ -155,8 +156,8 @@ impl<K: Clone + Debug + Eq + Hash> ExecutionProver<'_, K> {
             let message = CycleTracingData::with_cycles_capacity(max_num_cycles);
             free_cycle_tracing_data_sender.send(message).unwrap();
         }
-        let mut free_delegation_witness_senders = HashMap::new();
-        let mut free_delegation_witness_receivers = HashMap::new();
+        let mut free_delegation_witness_senders = BTreeMap::new();
+        let mut free_delegation_witness_receivers = BTreeMap::new();
         for (circuit_type, factory) in binaries
             .iter()
             .map(|b| Self::get_delegation_factories(b.circuit_type).into_iter())
@@ -309,11 +310,11 @@ impl<K: Clone + Debug + Eq + Hash> ExecutionProver<'_, K> {
         let mut final_register_values = None;
         let mut final_delegation_chunks_counts = None;
         let mut main_memory_commitments = vec![];
-        let mut delegation_memory_commitments = HashMap::new();
+        let mut delegation_memory_commitments = BTreeMap::new();
         let mut main_proofs = vec![];
-        let mut delegation_proofs = HashMap::new();
-        let mut setup_and_teardown_chunks = HashMap::new();
-        let mut cycles_chunks = HashMap::new();
+        let mut delegation_proofs = BTreeMap::new();
+        let mut setup_and_teardown_chunks = BTreeMap::new();
+        let mut cycles_chunks = BTreeMap::new();
         let mut delegation_work_sender = Some(gpu_work_requests_sender.clone());
         let send_main_work_request =
             move |circuit_sequence: usize,
@@ -659,19 +660,21 @@ impl<K: Clone + Debug + Eq + Hash> ExecutionProver<'_, K> {
             .sorted_by_key(|(index, _)| *index)
             .map(|(_, caps)| caps)
             .collect_vec();
-        let delegation_memory_commitments = delegation_memory_commitments
+        let mut delegation_memory_commitments = delegation_memory_commitments
             .into_iter()
             .map(|(id, caps)| (id as u32, caps))
             .collect_vec();
+        delegation_memory_commitments.sort_by_key(|(id, _)| *id);
         let main_proofs = main_proofs
             .into_iter()
             .sorted_by_key(|(index, _)| *index)
             .map(|(_, proof)| proof)
             .collect_vec();
-        let delegation_proofs = delegation_proofs
+        let mut delegation_proofs = delegation_proofs
             .into_iter()
             .map(|(id, proofs)| (id as u32, proofs))
             .collect_vec();
+        delegation_proofs.sort_by_key(|(id, _)| *id);
         (
             final_register_values,
             main_memory_commitments,
@@ -874,7 +877,7 @@ impl<K: Clone + Debug + Eq + Hash> ExecutionProver<'_, K> {
 
     fn get_delegation_factories<A: GoodAllocator>(
         circuit_type: MainCircuitType,
-    ) -> HashMap<DelegationCircuitType, Box<dyn Fn() -> DelegationWitness<A>>> {
+    ) -> BTreeMap<DelegationCircuitType, Box<dyn Fn() -> DelegationWitness<A>>> {
         let factories = match circuit_type {
             MainCircuitType::FinalReducedRiscVMachine => {
                 setups::delegation_factories_for_machine::<IWithoutByteAccessIsaConfig, A>()
@@ -980,7 +983,7 @@ impl<K: Clone + Debug + Eq + Hash> ExecutionProver<'_, K> {
     }
 }
 
-impl<'a, K: Debug + Eq + Hash> Drop for ExecutionProver<'a, K> {
+impl<'a, K: Debug + Eq + Hash + std::cmp::Ord> Drop for ExecutionProver<'a, K> {
     fn drop(&mut self) {
         trace!("PROVER waiting for all threads to finish");
         self.wait_group.take().unwrap().wait();

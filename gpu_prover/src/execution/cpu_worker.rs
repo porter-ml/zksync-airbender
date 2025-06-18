@@ -17,7 +17,7 @@ use prover::risc_v_simulator::delegations::DelegationsCSRProcessor;
 use prover::tracers::delegation::DelegationWitness;
 use prover::ShuffleRamSetupAndTeardown;
 use std::cell::RefCell;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::ops::Deref;
 use std::time::Instant;
 use trace_and_split::setups::trace_len_for_machine;
@@ -63,7 +63,7 @@ pub enum CpuWorkerMode<A: GoodAllocator> {
         free_cycle_tracing_data: Receiver<CycleTracingData<A>>,
     },
     TraceDelegations {
-        free_delegation_witnesses: HashMap<DelegationCircuitType, Receiver<DelegationWitness<A>>>,
+        free_delegation_witnesses: BTreeMap<DelegationCircuitType, Receiver<DelegationWitness<A>>>,
     },
 }
 
@@ -387,7 +387,7 @@ fn trace_delegations<C: MachineConfig, A: GoodAllocator + 'static>(
     num_main_chunks_upper_bound: usize,
     binary: impl Deref<Target = impl Deref<Target = [u32]>>,
     non_determinism: impl Deref<Target = impl NonDeterminism>,
-    free_delegation_witnesses: HashMap<DelegationCircuitType, Receiver<DelegationWitness<A>>>,
+    free_delegation_witnesses: BTreeMap<DelegationCircuitType, Receiver<DelegationWitness<A>>>,
     results: Sender<WorkerResult<A>>,
 ) {
     trace!("BATCH[{batch_id}] CPU_WORKER[{worker_id}] worker for tracing delegations started");
@@ -405,7 +405,7 @@ fn trace_delegations<C: MachineConfig, A: GoodAllocator + 'static>(
     let mut ram_tracing_data = RamTracingData::<RAM_SIZE, false>::new();
     let cycle_tracing_data = CycleTracingData::with_cycles_capacity(0);
     let delegation_tracing_data = DelegationTracingData::default();
-    let delegation_chunks_counts = RefCell::new(HashMap::new());
+    let delegation_chunks_counts = RefCell::new(BTreeMap::new());
     let delegation_swap_fn = |delegation_id, witness: Option<DelegationWitness<A>>| {
         let circuit_type = DelegationCircuitType::from(delegation_id);
         if let Some(witness) = witness {
@@ -470,7 +470,8 @@ fn trace_delegations<C: MachineConfig, A: GoodAllocator + 'static>(
     );
     let mut witnesses = tracer.delegation_tracing_data.witnesses;
     let mut delegation_chunks_counts = delegation_chunks_counts.into_inner();
-    for (delegation_id, witness) in witnesses.drain() {
+    // for (delegation_id, witness) in witnesses.drain() {
+    while let Some((delegation_id, witness)) = witnesses.pop_first() {
         witness.assert_consistency();
         trace!(
             "BATCH[{batch_id}] CPU_WORKER[{worker_id}] delegation {delegation_id} witness with {} delegations produced",
