@@ -247,6 +247,7 @@ fn gpu_worker<C: ProverContext>(
                         log_tree_cap_size,
                         &context,
                     )?;
+                    context.get_exec_stream().synchronize()?;
                     JobType::MemoryCommitment(job)
                 }
                 GpuWorkRequest::Proof(request) => {
