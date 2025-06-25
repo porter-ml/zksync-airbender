@@ -41,6 +41,8 @@ Details on third-party notices can be found in [NOTICE.md](./NOTICE.md), in `ACK
 
 ## Official Links
 
+- [Telegram for Airbender Developers](https://t.me/+dNQTnOIeKbtmZmFh)
+- [Github Discussions for Airbender Developers](https://github.com/zkSync-Community-Hub/zksync-developers/discussions/categories/airbender)
 - [Website](https://zksync.io/)
 - [GitHub](https://github.com/matter-labs)
 - [ZK Credo](https://github.com/zksync/credo)
